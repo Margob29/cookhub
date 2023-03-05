@@ -1,8 +1,9 @@
-import logo from "./logo.svg";
 import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Home from "./pages/Home/HomePage";
 
 function App() {
-  return <h1>hello</h1>;
+  return <Home />;
 }
 
 export default App;
