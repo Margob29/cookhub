@@ -84,3 +84,22 @@
   padding-right: 10px;
   margin: 10px;
 }
+
+.btnModify{
+  background-color: #DCF3FF;
+  color: #A20041;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  font-size: 1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 10px;
+  border: #A20041 1px solid; 
+}
+
+.btnAdd{
+  color:#5837B3;
+  font-size: 20px;
+}

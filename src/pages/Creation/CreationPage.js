@@ -1,14 +1,12 @@
 import "../../App.css";
-import CHNavbar from "../../components/CookHub_navbar";
 
 export default function CreationForm() {
   return (
     <div>
-      <CHNavbar></CHNavbar>
       <div className="container">
         <form>
           <fieldset>
-            <legend>Qu'est-ce que tu nous propose de bon ?</legend>
+            <legend>Qu'est-ce que tu nous proposes de bon ?</legend>
             <div>
               <label>Nom de la recette</label>
               <input type="text" required />
