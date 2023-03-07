@@ -25,3 +25,32 @@
   height: auto;
   margin-left: 10px;
 }
+
+.presentation{
+  background-color: hsla(0, 0%, 0%, 0.54);
+  border-radius: 15px;
+}
+
+.textPresentation{
+  color: #FF96A5;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  padding: 2px;
+  font-size: 2rem;
+  text-align: center;
+  margin: 5px;
+}
+
+.btnCreation{
+  background-color: #FF96A5;
+  color: black;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  font-size: 1.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  padding: 10px;
+  margin: 10px;
+}
+
+.btnCreation:hover{
+  color: rgba(0, 0, 0, 0.70);
+}
