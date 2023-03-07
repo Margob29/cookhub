@@ -54,3 +54,33 @@
 .btnCreation:hover{
   color: rgba(0, 0, 0, 0.70);
 }
+
+.btnDiscard{
+  background-color: #A20041;
+  color: white;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  font-size: 1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 10px;
+}
+
+.btnDiscard:hover, .btnSubmit:hover{
+  color: #FFF3CC;
+}
+
+.btnSubmit{
+  background-color: #5837B3;
+  color: white;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  font-size: 1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 10px;
+}
