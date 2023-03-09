@@ -35,10 +35,10 @@ export default function CreationForm() {
               <input type="number" /> <span> minutes.</span>
             </div>
             <div>
-              <a className="btnDiscard" href="#">
+              <a className="btnDiscard" href="/">
                 Abandonner
               </a>
-              <a className="btnSubmit" type="submit" href="#">
+              <a className="btnSubmit" type="submit" href="/creationprogress">
                 Suivant
               </a>
             </div>

@@ -76,6 +76,7 @@
   padding-left: 10px;
   padding-right: 10px;
   margin: 10px;
+  text-align: center;
 }
 
 .btnDiscard:hover, .btnSubmit:hover{
@@ -93,6 +94,7 @@
   padding-left: 10px;
   padding-right: 10px;
   margin: 10px;
+  text-align: center;
 }
 
 .btnModify{
@@ -108,6 +110,10 @@
   margin: 10px;
   border: #A20041 1px solid;
   text-align: center;
+}
+
+.btnModify:hover{
+  color:#c62565,
 }
 
 .btnAdd{

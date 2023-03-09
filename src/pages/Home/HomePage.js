@@ -7,7 +7,7 @@ export default function Home() {
       <img src={cooker} alt="Cuisinier" width="100%" height="250px"></img>
       <div className="presentation">
         <p className="textPresentation">Partage tes talents de cuisinier</p>
-        <a role="button" className="btnCreation" href="#">
+        <a role="button" className="btnCreation" href="/creation">
           Créer une recette
         </a>
       </div>

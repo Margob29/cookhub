@@ -23,7 +23,7 @@ export default function StepCreation() {
                 <div className="card">
                   <div className="card-body">
                     <h3 className="card-title">Ajouter un ingrédient</h3>
-                    <a href="#" className="d-flex justify-content-center">
+                    <a href="/addingredient" className="d-flex justify-content-center">
                       <Icon
                         icon="material-symbols:add-circle-outline-rounded"
                         width={60}
@@ -38,10 +38,10 @@ export default function StepCreation() {
             <input type="text"></input>
           </div>
           <div className="buttons">
-            <a className="btnDiscard" href="#">
+            <a className="btnDiscard" href="/creationprogress">
               Annuler
             </a>
-            <a className="btnSubmit" type="submit" href="#">
+            <a className="btnSubmit" type="submit" href="/creationprogress">
               Valider l'étape
             </a>
           </div>

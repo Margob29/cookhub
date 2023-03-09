@@ -21,7 +21,7 @@ export default function CreationProgress() {
         <div className="card">
           <div className="card-body">
             <h3 className="card-title">Ajouter une étape</h3>
-            <a href="#">
+            <a href="/creationstep">
               <Icon
                 icon="material-symbols:add-circle-outline-rounded"
                 width={60}
@@ -32,7 +32,7 @@ export default function CreationProgress() {
         </div>
       </div>
       <div>
-        <a className="btnDiscard" href="#">
+        <a className="btnDiscard" href="/">
           Abandonner
         </a>
         <a className="btnSubmit" type="submit" href="#">

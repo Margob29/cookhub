@@ -18,10 +18,10 @@ export default function AddIngredient() {
             <input type="text" />
           </div>
           <div className="buttons">
-            <a className="btnDiscard" href="#">
+            <a className="btnDiscard" href="/creationstep">
               Annuler
             </a>
-            <a className="btnSubmit" type="submit" href="#">
+            <a className="btnSubmit" type="submit" href="/creationstep">
               Ajouter l'ingrédient
             </a>
           </div>
