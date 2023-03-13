@@ -28,8 +28,8 @@ function App() {
           <Route path="/creationprogress" element={<CreationProgress />} />
           <Route path="/creationstep" element={<StepCreation />} />
           <Route path="/addingredient" element={<AddIngredient />} />
-          <Route path="*" element={<Error />} />{" "}
-        </Routes>{" "}
+          <Route path="*" element={<Error />} />
+        </Routes>
       </BrowserRouter>
     </div>
   );
