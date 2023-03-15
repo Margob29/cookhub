@@ -1,7 +1,7 @@
-import "../App.css";
+import "../../App.css";
 import { Icon } from "@iconify/react";
 import { Navbar, Nav } from "react-bootstrap";
-import logo from "../images/logo_violet.png";
+import logo from "../../images/logo_violet.png";
 
 export default function CHNavbar() {
   return (

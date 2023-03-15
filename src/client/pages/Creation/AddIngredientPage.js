@@ -1,4 +1,4 @@
-import "../../App.css";
+import "../../../App.css";
 export default function AddIngredient() {
   return (
     //TODO : comme pour le 1er form, mettre les input les uns en dessous des autres quand c'est sur tel

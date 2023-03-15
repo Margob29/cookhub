@@ -1,5 +1,5 @@
-import "../../App.css";
-import logo from "../../images/logo_violet.png";
+import "../../../App.css";
+import logo from "../../../images/logo_violet.png";
 
 export default function CreationForm() {
   return (
@@ -17,12 +17,12 @@ export default function CreationForm() {
               Qu'est-ce que tu nous proposes de bon ?
               <img src={logo} alt="Logo" className="logo" />
             </legend>
-            <div className="row mb-3">
-              <div className="col-6">
+            <div className="row">
+              <div className="col-xl-6 col-md-6 col-sm-12 mb-3">
                 <label className="me-2 labelname">Nom de la recette :</label>
                 <input type="text" className="labelname" required />{" "}
               </div>
-              <div className="col-6">
+              <div className="col-xl-6 col-md-6 col-sm-12 mb-3">
                 <label className="me-2 labelname">Catégories</label>
                 <select className="labelname">
                   <option>Végétarien</option>

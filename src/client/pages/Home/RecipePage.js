@@ -1,5 +1,5 @@
-import "../../App.css";
-import applePie from "../../images/p.jpeg";
+import "../../../App.css";
+import applePie from "../../../images/p.jpeg";
 import { Icon } from "@iconify/react";
 
 export default function RecipePage() {
@@ -66,7 +66,7 @@ export default function RecipePage() {
           </div>
         </div>
         <div className="col-6">
-          <div className="row mb-3 d-flex justify-content-center">
+          <div className="row mb-3 me-0 d-flex justify-content-center">
             <h4 className="labelname mb-4">Ingrédients nécessaires :</h4>
             <div className="row text-center">
               <div className="col-xl-6 col-sm-12">

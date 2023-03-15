@@ -5,14 +5,14 @@ import ReactDOM from "react-dom/client";
 
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Home from "./pages/Home/HomePage";
-import CreationForm from "./pages/Creation/CreationPage";
-import CHNavbar from "./components/CookHub_navbar";
-import CreationProgress from "./pages/Creation/CreationInProgressPage";
-import StepCreation from "./pages/Creation/CreationStepPage";
-import AddIngredient from "./pages/Creation/AddIngredientPage";
-import RecipePage from "./pages/Home/RecipePage";
-import Error from "./pages/Error";
+import Home from "./client/pages/Home/HomePage";
+import CreationForm from "./client/pages/Creation/CreationPage";
+import CHNavbar from "./client/components/CookHub_navbar";
+import CreationProgress from "./client/pages/Creation/CreationInProgressPage";
+import StepCreation from "./client/pages/Creation/CreationStepPage";
+import AddIngredient from "./client/pages/Creation/AddIngredientPage";
+import RecipePage from "./client/pages/Home/RecipePage";
+import Error from "./client/pages/Error";
 
 function App() {
   return (

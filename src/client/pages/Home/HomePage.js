@@ -1,5 +1,5 @@
-import "../../App.css";
-import cooker from "../../images/th2.jpeg";
+import "../../../App.css";
+import cooker from "../../../images/th2.jpeg";
 
 export default function Home() {
   return (
@@ -7,7 +7,13 @@ export default function Home() {
     //TODO : superposer le texte et l'image
     //TODO : responsive
     <div className="head">
-      <img src={cooker} alt="Cuisinier" width="100%" height="250px"></img>
+      <img
+        src={cooker}
+        alt="Cuisinier"
+        width="100%"
+        height="auto"
+        className="sm-none"
+      ></img>
       <div className="presentation">
         <p className="textPresentation">Partage tes talents de cuisinier</p>
         <a className="btnCreation" href="/creation">

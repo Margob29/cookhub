@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
-import "../../App.css";
-import logo from "../../images/logo_violet.png";
+import "../../../App.css";
+import logo from "../../../images/logo_violet.png";
 
 export default function StepCreation() {
   return (

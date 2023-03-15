@@ -27,12 +27,25 @@
   margin-right: 10px;
 }
 
+@media only screen and (max-width: 400px) {
+  .presentation{
+    background-color: hsla(0, 0%, 0%, 0.54);
+    border-radius: 15px;
+    width: 80%;
+    height: 210px;
+    text-align: center;
+  }
+
+}
+
+@media only screen and (min-width: 400px){
 .presentation{
   background-color: hsla(0, 0%, 0%, 0.54);
   border-radius: 15px;
   width: 50%;
   height: 125px;
   text-align: center;
+}
 }
 
 .head{
