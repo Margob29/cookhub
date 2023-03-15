@@ -22,6 +22,194 @@
 
 .logo{
   width: 40px;
-  height: auto;
+  height: 40px;
   margin-left: 10px;
+  margin-right: 10px;
+}
+
+@media only screen and (max-width: 400px) {
+  .presentation{
+    background-color: hsla(0, 0%, 0%, 0.54);
+    border-radius: 15px;
+    width: 80%;
+    height: 210px;
+    text-align: center;
+  }
+
+}
+
+@media only screen and (min-width: 400px){
+.presentation{
+  background-color: hsla(0, 0%, 0%, 0.54);
+  border-radius: 15px;
+  width: 50%;
+  height: 125px;
+  text-align: center;
+}
+}
+
+.head{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.textPresentation{
+  color: #FF96A5;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  padding: 2px;
+  font-size: 2rem;
+  text-align: center;
+  margin: 5px;
+}
+
+.btnCreation{
+  background-color: #FF96A5;
+  color: black;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  font-size: 1.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  padding: 10px;
+  margin: 10px;
+}
+
+.btnCreation:hover{
+  color: rgba(0, 0, 0, 0.70);
+}
+
+.btnDiscard{
+  background-color: #A20041;
+  color: #FFF3CC;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  font-size: 1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 10px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.btnDiscard:hover, .btnSubmit:hover{
+  color: #ffffff;
+}
+
+
+.btnSubmit{
+  background-color: #5837B3;
+  color: #FFF3CC;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  font-size: 1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 10px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnModify{
+  background-color: #FFF3CC;
+  color: #A20041;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  font-size: 1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 10px;
+  border: #A20041 1px solid;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnModify:hover{
+  color:#5837B3,
+}
+
+.btnAdd{
+  color:#5837B3;
+  font-size: 20px;
+}
+
+.buttons{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.formcontainer{
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  background-color: #DCF3FF;
+  border-radius: 40px;
+}
+
+.formtitle{
+  color: #5837B3;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-size: xx-large;
+}
+
+.cardstyle{
+  font-family: 'Berlin Sans FB', 'Fredoka';
+  text-align: center;
+}
+
+.card-text{
+  text-align: left;
+}
+
+.labelname{
+  font-family: 'Berlin Sans FB', 'Fredoka';
+}
+
+.ingredients{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Berlin Sans FB', 'Fredoka';
+}
+
+.errorText{
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  color: #A20041;
+  padding: 2px;
+  font-size: 2rem;
+  text-align: center;
+  margin: 5px;
+}
+
+.btnHome{
+  background-color:#A20041;
+  color:#FFF3CC;
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  font-size: 1.25rem;
+  border-radius: 50px;
+  text-decoration: none;
+  padding: 10px;
+  margin-top: 30px;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.textStyle{
+  font-family: 'Berlin Sans FB', 'Fredoka';
 }
