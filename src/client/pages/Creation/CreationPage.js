@@ -6,7 +6,6 @@ export default function CreationForm() {
     //TODO : mettre tous les champs en required
     //TODO : faire la liste exhaustive des catégories
     //TODO : faire en sorte qu'il n'y ait rien de pré-selectionné pour les catégories
-    //TODO : finir le responsive (titre + première ligne)
     //TODO : faire la confirmation d'annulation
     <div className="container d-flex justify-content-center">
       <div className="col-sm-12 col-lg-8">

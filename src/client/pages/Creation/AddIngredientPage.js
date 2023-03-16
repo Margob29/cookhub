@@ -1,7 +1,6 @@
 import "../../../App.css";
 export default function AddIngredient() {
   return (
-    //TODO : comme pour le 1er form, mettre les input les uns en dessous des autres quand c'est sur tel
     //TODO : faire la confirmation d'annulation
     <div className="container d-flex justify-content-center">
       <div className="col-sm-12 col-lg-8">
@@ -15,7 +14,7 @@ export default function AddIngredient() {
               </div>
             </div>
             <div className="row mb-3">
-              <div className="col-6">
+              <div className="col-xl-6 col-md-6 col-sm-12 mb-3">
                 <label className="me-2 labelname">Quantité :</label>
                 <input type="number" />
               </div>

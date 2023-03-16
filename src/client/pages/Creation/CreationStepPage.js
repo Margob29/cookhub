@@ -9,11 +9,13 @@ export default function StepCreation() {
     //TODO : checker le hover du bouton modifier qui veut pas se mettre comme je veux
     //TODO : peut-être mettre autre chose à la place du logo dans le titre
     //TODO : faire la confirmation d'annulation
-    <div className="container d-flex justify-content-center">
-      <div className="col-sm-12 col-lg-8">
+    //TODO : regarder le margin pour le responsive
+    <div className="container d-flex justify-content-center p-0">
+      <div className="col-lg-8">
         <form>
-          <fieldset className="form p-4 m-4 formcontainer">
+          <fieldset className="form p-4 m-lg-4 formcontainer">
             <legend className="formtitle mb-3">
+              <Icon icon="col-xl-8" color={"#5837B3"} width={40} />
               <img src={logo} alt="Logo" className="logo" />
               Comment réaliser cette étape ?
               <img src={logo} alt="Logo" className="logo" />
@@ -83,7 +85,7 @@ export default function StepCreation() {
                 </div>
               </div>
               <label className="labelname">Description :</label>
-              <input type="text" className="labelname" />
+              <input type="textarea" className="labelname" />
             </div>
             <div className="buttons">
               <a className="btnDiscard" href="/creationprogress">
