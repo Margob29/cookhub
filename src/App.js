@@ -23,7 +23,7 @@ function App() {
         <CHNavbar />{" "}
         <Routes>
           <Route exact path="/" element={<Home />} />
-          <Route path="/details/2" element={<RecipePage />} />
+          <Route path="/details/:id/:version" element={<RecipePage />} />
           <Route path="/creation" element={<CreationForm />} />
           <Route path="/creationprogress" element={<CreationProgress />} />
           <Route path="/creationstep" element={<StepCreation />} />
