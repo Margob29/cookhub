@@ -223,6 +223,12 @@
   font-family: 'Berlin Sans FB', 'Fredoka';
 }
 
+/* ==================== Ingredients ====================*/
+.rectIngredient{
+  border-radius: 50px;
+  border: solid 2px #A20041;
+  padding: 5px;
+}
 /* ==================== Others ====================*/
 .errorText{
   font-family: 'Berlin Sans FB Demi', 'Fredoka';

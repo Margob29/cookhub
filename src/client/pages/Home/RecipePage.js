@@ -1,20 +1,61 @@
 import "../../../App.css";
 import applePie from "../../../images/p.jpeg";
 import { Icon } from "@iconify/react";
+import Axios from "axios";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import RecipeCardList from "../../components/RecipeCardList";
+import Ingredient from "../../components/Ingredient";
 
 export default function RecipePage() {
+  let { id, version } = useParams();
+  const [recipe, setRecipe] = useState({});
+  const [listIngredients, setListIngredients] = useState([]);
+  const [listVersion, setListVersion] = useState([]);
+
+  const getRecipe = (id, version) => {
+    Axios.get("http://localhost:3001/details/", {
+      params: { idRecipe: id, version: version },
+    })
+      .then((response) => {
+        setListIngredients(response.data.ingr);
+        setRecipe(response.data.recipe);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const getAllVersions = (idRecipe, version) => {
+    Axios.get("http://localhost:3001/versions/", {
+      params: { idRecipe: idRecipe, version: version },
+    })
+      .then((response) => {
+        setListVersion(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getRecipe(id, version);
+    getAllVersions(id, version);
+  }, []);
+
   return (
-    //TODO : revoir la taille de la photo
     <div>
       <div className="row">
-        <div className="col-lg-6 col-sm-12">
-          <div className="row">
-            <h3 className="formtitle">Tarte aux pommes</h3>
+        <div className="col-lg-5 col-sm-12">
+          <div className="row d-flex justify-content-center">
+            <h3 className="formtitle">{recipe.name}</h3>
             <img
               src={applePie}
               alt="Photo recette"
-              width="10%"
-              height="auto"
+              style={{
+                height: "auto",
+                width: 350,
+              }}
             ></img>
           </div>
           <div className="row">
@@ -22,14 +63,14 @@ export default function RecipePage() {
               <p className="textStyle">
                 <Icon icon="ph:knife-fill" width={30} color={"#5837B3"} />
                 <br />
-                Préparation <br /> 20min
+                Préparation <br /> {recipe.preparationTime}min
               </p>
             </div>
             <div className="col-3 mt-2 d-flex justify-content-center align-items-center text-center">
               <p className="textStyle">
                 <Icon icon="mdi:toaster-oven" width={30} color={"#5837B3"} />
                 <br />
-                Cuisson <br /> 30min
+                Cuisson <br /> {recipe.bakingTime}min
               </p>
             </div>
             <div className="col-3 mt-2 d-flex justify-content-center align-items-center text-center">
@@ -40,14 +81,14 @@ export default function RecipePage() {
                   color={"#5837B3"}
                 />
                 <br />
-                Repos <br /> -
+                Repos <br /> {recipe.breakTime ? recipe.breakTime + "min" : "-"}
               </p>
             </div>
             <div className="col-3 mt-2 d-flex justify-content-center align-items-center">
               <Icon
                 icon="mdi:cards-heart-outline"
                 width={30}
-                color={"#5837B3"}
+                color={"#A20041"}
               />
             </div>
           </div>
@@ -65,38 +106,32 @@ export default function RecipePage() {
             </div>
           </div>
         </div>
-        <div className="col-6">
+        <div className="col-7">
           <div className="row mb-3 me-0 d-flex justify-content-center">
-            <h4 className="labelname mb-4">Ingrédients nécessaires :</h4>
+            <h4 className="labelname  mt-4">Ingrédients nécessaires :</h4>
             <div className="row text-center">
-              <div className="col-xl-6 col-sm-12">
-                <div className="row">
-                  <span className="col-6 ingredients">Farine</span>
-                  <span className="col-6 ingredients">150g</span>
-                </div>
-                <hr />
-                <div className="row">
-                  <span className="col-6 ingredients">Farine</span>
-                  <span className="col-6 ingredients">150g</span>
-                </div>
-                <hr />
-              </div>
-              <div className="col-xl-5 col-sm-12">
-                <div className="row">
-                  <span className="col-5 ingredients">Farine</span>
-                  <span className="col-5 ingredients">150g</span>
-                </div>
-                <hr />
-                <div className="row">
-                  <span className="col-5 ingredients">Farine</span>
-                  <span className="col-5 ingredients">150g</span>
-                </div>
-                <hr />
-              </div>
+              {listIngredients.map((ingredient, index) => {
+                return <Ingredient key={index} ingredient={ingredient} />;
+              })}
             </div>
           </div>
-          <div className="row">
+          <div className="row mt-4">
+            <hr />
             <h4 className="labelname mb-4">Versions :</h4>
+            {/* TODO: arriver à afficher qu'il n'y a pas d'autres versions */}
+            {console.log(listVersion)}
+            {listVersion === []
+              ? // <p>Il n'y a pas d'autres version</p>
+                console.log("pourquoi ça marche pas")
+              : listVersion.map((version, index) => {
+                  return (
+                    <div key={index} className="row">
+                      <a href={"/details/" + id + "/" + version.version}>
+                        Version n°{version.version}
+                      </a>
+                    </div>
+                  );
+                })}
           </div>
         </div>
       </div>

@@ -18,10 +18,6 @@ app.listen(PORT, () => {
   console.log(`Le serveur tourne sur ${PORT}`);
 });
 
-// var corsOptions = {
-//   origin: "http://localhost:3000/",
-// };
-
 //to allow a request from frontend to backend
 //pour la sécurité qui donne une certification lui permettant d'accéder aux données
 app.use(cors());
@@ -66,14 +62,31 @@ app.post("/create", (req, res) => {
 // ================= READ RECIPE ======================
 
 //Get recipe details with its id and version
-app.get("/details/:id/:v", (req, res) => {
-  const recipeId = req.params.id;
-  const query = "SELECT * FROM recipe WHERE IdRecipe = ? AND Version = ?";
+app.get("/details", (req, res) => {
+  const recipeId = req.query.idRecipe;
+  const version = req.query.version;
   db.query(
-    "SELECT * FROM recipe WHERE IdRecipe = ? AND Version = ?",
+    "SELECT r.name as nameR, r.nbPortion, r.preparationTime, r.bakingTime, r.breakTime, i.name as nameI, quantity, unit FROM ingredient AS i INNER JOIN stepneed AS sn ON i.idIngredient=sn.idIngredient INNER JOIN preparation AS p ON p.idStep=sn.idStep INNER JOIN recipe as r ON r.idRecipe=p.idRecipe AND r.version=p.idVersion AND r.idRecipe= ? AND r.version= ?",
+    [recipeId, version],
     (err, result) => {
       if (err) console.log(err);
-      else res.send(result);
+      else {
+        const ingr = result.map((recipe) => {
+          return {
+            nameI: recipe.nameI,
+            quantity: recipe.quantity,
+            unit: recipe.unit,
+          };
+        });
+        const recipe = {
+          name: result[0].nameR,
+          nbPortion: result[0].nbPortion,
+          preparationTime: result[0].preparationTime,
+          bakingTime: result[0].bakingTime,
+          breakTime: result[0].breakTime,
+        };
+        res.send({ recipe, ingr });
+      }
     }
   );
 });
@@ -84,6 +97,21 @@ app.get("/recipes", (req, res) => {
     if (err) console.log(err);
     else res.send(result);
   });
+});
+
+// ================= READ VERSION ======================
+//Get all the versions of a recipe
+app.get("/versions/", (req, res) => {
+  const idRecipe = req.query.idRecipe;
+  const idVersion = req.query.version;
+  db.query(
+    "SELECT version FROM recipe WHERE idRecipe = ? AND version != ?",
+    [idRecipe, idVersion],
+    (err, result) => {
+      if (err) console.log(err);
+      else res.send(result);
+    }
+  );
 });
 // ================= UPDATE RECIPE ======================
 // ================= DELETE RECIPE ======================
