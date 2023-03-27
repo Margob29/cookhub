@@ -4,7 +4,6 @@ import { Icon } from "@iconify/react";
 import Axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import RecipeCardList from "../../components/RecipeCardList";
 import Ingredient from "../../components/Ingredient";
 
 export default function RecipePage() {
@@ -47,10 +46,12 @@ export default function RecipePage() {
 
   return (
     <div>
+      <h3 className="formtitle mb-4 mt-2">
+        {recipe.name} - Version n°{version}
+      </h3>
       <div className="row">
         <div className="col-lg-5 col-sm-12">
           <div className="row d-flex justify-content-center">
-            <h3 className="formtitle">{recipe.name}</h3>
             <img
               src={applePie}
               alt="Photo recette"
@@ -110,7 +111,7 @@ export default function RecipePage() {
         </div>
         <div className="col-7">
           <div className="row mb-3 me-0 d-flex justify-content-center">
-            <h4 className="labelname  mt-4">Ingrédients nécessaires :</h4>
+            <h4 className="labelname mt-2">Ingrédients nécessaires :</h4>
             <div className="row text-center">
               {listIngredients.map((ingredient, index) => {
                 return <Ingredient key={index} ingredient={ingredient} />;
@@ -120,20 +121,23 @@ export default function RecipePage() {
           <div className="row mt-4">
             <hr />
             <h4 className="labelname mb-4">Versions :</h4>
-            {/* TODO: arriver à afficher qu'il n'y a pas d'autres versions */}
             {console.log(listVersion)}
-            {listVersion === []
-              ? // <p>Il n'y a pas d'autres version</p>
-                console.log("pourquoi ça marche pas")
-              : listVersion.map((version, index) => {
-                  return (
-                    <div key={index} className="row">
-                      <a href={"/details/" + id + "/" + version.version}>
-                        Version n°{version.version}
-                      </a>
-                    </div>
-                  );
-                })}
+            {listVersion.length == 0 ? (
+              <p className="textStyle">
+                Il n'y a pas d'autres versions. A toi d'en créer une pour que
+                cette recette TE ressemble !
+              </p>
+            ) : (
+              listVersion.map((version, index) => {
+                return (
+                  <div key={index} className="row">
+                    <a href={"/details/" + id + "/" + version.version}>
+                      Version n°{version.version}
+                    </a>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </div>

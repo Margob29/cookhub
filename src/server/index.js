@@ -2,7 +2,9 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
+const { default: axios } = require("axios");
 const app = express();
+const Axios = require("axios");
 
 // connexion to BD
 const db = mysql.createConnection({
@@ -38,25 +40,33 @@ app.use(express.json());
 // ================= CREATE RECIPE ======================
 //req = request to grab something from the frontend
 //res =  response ton send something to the frontend
-app.post("/create", (req, res) => {
+app.post("/create", async (req, res) => {
   console.log("create");
-  const name = req.body.name;
-  const category = req.body.category;
-  const nbPortion = req.body.nbPortion;
-  const cookTime = req.body.cookTime;
-  const bakeTime = req.body.bakeTime;
-  const pauseTime = req.body.pauseTime;
-  const version = 2;
+  console.log(req.body);
+  const recipe = req.body.params;
+  const name = recipe.name;
+  const nbPortion = recipe.nbPortion;
+  const cookTime = recipe.cookTime;
+  const bakeTime = recipe.bakeTime;
+  const pauseTime = recipe.pauseTime;
+  const version = 1;
+  let id;
 
-  //err
-  db.query(
-    "INSERT INTO recipe (Version, Name, Category, NbPortion, TimePreparation, TimeBaking, TimeBreak) VALUES (?,?,?,?,?,?,?)",
-    [version, name, category, cookTime, bakeTime, pauseTime, nbPortion],
-    (err, result) => {
-      if (err) console.log(err);
-      else res.send("Values inserted");
-    }
-  );
+  db.query("SELECT MAX(idRecipe) as lastId FROM recipe", (err, result) => {
+    if (err) console.log(err);
+    else finish(result[0].lastId);
+  });
+
+  const finish = (id) => {
+    db.query(
+      "INSERT INTO recipe (idRecipe, version, name, nbPortion, preparationTime, bakingTime, breakTime) VALUES (?,?,?,?,?,?,?)",
+      [id + 1, version, name, nbPortion, cookTime, bakeTime, pauseTime],
+      (err, result) => {
+        if (err) console.log(err);
+        else res.send("Values inserted");
+      }
+    );
+  };
 });
 
 // ================= READ RECIPE ======================
@@ -113,6 +123,16 @@ app.get("/versions/", (req, res) => {
     }
   );
 });
+
+// ================= READ CATEGORY ======================
+//Get all the categories
+app.get("/categories", (req, res) => {
+  db.query("SELECT * FROM category", (err, result) => {
+    if (err) console.log(err);
+    else res.send(result);
+  });
+});
+
 // ================= UPDATE RECIPE ======================
 // ================= DELETE RECIPE ======================
 
