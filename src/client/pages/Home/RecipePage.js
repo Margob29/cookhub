@@ -13,6 +13,7 @@ export default function RecipePage() {
   const [listIngredients, setListIngredients] = useState([]);
   const [listVersion, setListVersion] = useState([]);
 
+  //functions to make requests to the DB
   const getRecipe = (id, version) => {
     Axios.get("http://localhost:3001/details/", {
       params: { idRecipe: id, version: version },
@@ -38,6 +39,7 @@ export default function RecipePage() {
       });
   };
 
+  //call to the function when the page is charged
   useEffect(() => {
     getRecipe(id, version);
     getAllVersions(id, version);
