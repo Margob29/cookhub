@@ -2,15 +2,18 @@ import "../../../App.css";
 import logo from "../../../images/logo_violet.png";
 import { useState, useEffect } from "react";
 import Axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function CreationForm() {
+  //TODO : faire en sorte que lorsqu'il manque des infos la validation ne se fait pas, l'utilisateur soit informé
+  //TODO : ajouter la redirection vers la page creationprogress/id
+  //TODO : voir comment récupérer l'ID de la recette qu'on vient de créer
   const [name, setName] = useState("gbfnhtjy");
   const [nbPortions, setNbPortions] = useState(0);
-  const [cookTime, setCookTime] = useState(0);
-  const [bakeTime, setBakeTime] = useState(0);
-  const [pauseTime, setPauseTime] = useState(0);
+  const [preparationTime, setPreparationTime] = useState(0);
+  const [bakingTime, setBakingTime] = useState(0);
+  const [breakTime, setBreakTime] = useState(0);
   const [listCategories, setListCategories] = useState([]);
-  const [lastIdRecipe, setLastIdRecipe] = useState(0);
 
   const getAllCategories = () => {
     Axios.get("http://localhost:3001/categories")
@@ -24,23 +27,20 @@ export default function CreationForm() {
 
   //add a recipe with parametres from the form
   const addRecipe = () => {
-    console.log("click");
-    Axios.post("http://localhost:3001/create", {
-      params: {
-        name: name,
-        nbPortion: nbPortions,
-        cookTime: cookTime,
-        bakeTime: bakeTime,
-        pauseTime: pauseTime,
-      },
-    })
-      .then(() => {
-        console.log("success");
-      })
-      .catch((error) => {
-        console.log("on a une erreur");
+    if (!name || !nbPortions || !preparationTime) {
+    } else {
+      Axios.post("http://localhost:3001/create", {
+        params: {
+          name: name,
+          nbPortion: nbPortions,
+          preparationTime: preparationTime,
+          bakingTime: bakingTime,
+          pauseTime: breakTime,
+        },
+      }).catch((error) => {
         console.log(error);
       });
+    }
   };
 
   useEffect(() => {
@@ -49,7 +49,6 @@ export default function CreationForm() {
 
   return (
     //TODO : mettre tous les champs en required
-    //TODO : faire en sorte qu'il n'y ait rien de pré-selectionné pour les catégories
     //TODO : faire la confirmation d'annulation
 
     <div className="container d-flex justify-content-center">
@@ -97,6 +96,7 @@ export default function CreationForm() {
                 <input
                   type="number"
                   className="labelname"
+                  required
                   onChange={(event) => {
                     setNbPortions(event.target.value);
                   }}
@@ -111,8 +111,9 @@ export default function CreationForm() {
                 <input
                   type="number"
                   className="labelname"
+                  required
                   onChange={(event) => {
-                    setCookTime(event.target.value);
+                    setPreparationTime(event.target.value);
                   }}
                 />{" "}
                 <span className="labelname"> minutes.</span>
@@ -127,7 +128,7 @@ export default function CreationForm() {
                   type="number"
                   className="labelname"
                   onChange={(event) => {
-                    setBakeTime(event.target.value);
+                    setBakingTime(event.target.value);
                   }}
                 />{" "}
                 <span className="labelname"> minutes.</span>
@@ -142,7 +143,7 @@ export default function CreationForm() {
                   type="number"
                   className="labelname"
                   onChange={(event) => {
-                    setPauseTime(event.target.value);
+                    setBreakTime(event.target.value);
                   }}
                 />{" "}
                 <span className="labelname"> minutes.</span>
@@ -152,12 +153,7 @@ export default function CreationForm() {
               <a className="btnDiscard" href="/">
                 Abandonner
               </a>
-              <a
-                className="btnSubmit"
-                type="submit"
-                // href="/creationprogress"
-                onClick={addRecipe}
-              >
+              <a className="btnSubmit" type="submit" onClick={addRecipe}>
                 Suivant
               </a>
             </div>

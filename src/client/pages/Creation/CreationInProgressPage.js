@@ -1,27 +1,65 @@
 import "../../../App.css";
 import { Icon } from "@iconify/react";
 import logo from "../../../images/logo_violet.png";
+import Axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 export default function CreationProgress() {
+  //TODO : voir pourquoi j'arrive pas à récupérer le nom de la recette (sur postman ça marche)
+
+  let { id } = useParams();
+  const [name, setName] = useState("");
+
+  const getName = (id) => {
+    Axios.get("http://localhost:3001/recipeName/", {
+      params: { idRecipe: id },
+    })
+      .then((response) => {
+        setName(response.name);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getName(id);
+    console.log(name);
+  }, []);
+
   return (
-    //TODO : finir le responsive (titre)
-    //TODO : mettre une croix pour supprimer une étape
     //TODO : faire la confirmation d'annulation
     <div className="container d-flex justify-content-center m-3">
       <div className="col-sm-12 col-lg-8 formcontainer p-4">
         <h4 className="formtitle">
-          <img src={logo} alt="Logo" className="logo" />
-          Tarte aux pommes
-          <img src={logo} alt="Logo" className="logo" />
+          <Icon
+            icon="ph:knife-fill"
+            color={"#5837B3"}
+            width={40}
+            className="logo"
+          />
+          Bouh
+          <Icon
+            icon="ph:knife-fill"
+            color={"#5837B3"}
+            width={40}
+            className="logo"
+          />
         </h4>
         <p className="text-center labelname">
-          Rempli maintenant les étapes pour réaliser ta recette !
+          Explique nous comment faire pour réaliser ta recette !
         </p>
         <div className="row">
           <div className="col-xl-3 col-md-6 col-sm-6">
             <div className="card mb-2 cardstyle">
-              <div className="card-body">
-                <h3 className="card-title">Etape 1</h3>
+              <div className="card-body ">
+                <h3 className="card-title d-flex justify-content-between">
+                  Etape 1{" "}
+                  <a href="#" className="d-flex align-items-top">
+                    <Icon icon="charm:cross" width={20} color={"#5837B3"} />
+                  </a>
+                </h3>
                 <p className="card-text">
                   Mettre le chocolat au micro onde pour le faire fondre
                 </p>

@@ -4,7 +4,6 @@ const cors = require("cors");
 const mysql = require("mysql");
 const { default: axios } = require("axios");
 const app = express();
-const Axios = require("axios");
 
 // connexion to BD
 const db = mysql.createConnection({
@@ -20,58 +19,53 @@ app.listen(PORT, () => {
   console.log(`Le serveur tourne sur ${PORT}`);
 });
 
-//to allow a request from frontend to backend
-//pour la sécurité qui donne une certification lui permettant d'accéder aux données
+//to allow a request from frontend to backend, access to datas
 app.use(cors());
 
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "http://localhost:3000/");
-//   // res.header("Access-Control-Allow-Origin", "*");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
-// });
-
-//transmission des données en json sinon il sait pas et il comprend rien
+//to say that datas are transmitted in json format
 app.use(express.json());
 
 // ================= CREATE RECIPE ======================
 //req = request to grab something from the frontend
 //res =  response ton send something to the frontend
 app.post("/create", async (req, res) => {
-  console.log("create");
-  console.log(req.body);
   const recipe = req.body.params;
   const name = recipe.name;
   const nbPortion = recipe.nbPortion;
-  const cookTime = recipe.cookTime;
-  const bakeTime = recipe.bakeTime;
-  const pauseTime = recipe.pauseTime;
+  const preparationTime = recipe.preparationTime;
+  const bakingTime = recipe.bakingTime;
+  const breakTime = recipe.breakTime;
   const version = 1;
   let id;
 
+  //select the last id to increase by hand the idRecipe in the DB
   db.query("SELECT MAX(idRecipe) as lastId FROM recipe", (err, result) => {
-    if (err) console.log(err);
-    else finish(result[0].lastId);
+    //to be sure we get back the last id, we call the function create in the else of this request
+    err ? console.log(err) : create(result[0].lastId);
   });
 
-  const finish = (id) => {
+  //function which create the new recipe with an id that we precise
+  const create = (id) => {
     db.query(
       "INSERT INTO recipe (idRecipe, version, name, nbPortion, preparationTime, bakingTime, breakTime) VALUES (?,?,?,?,?,?,?)",
-      [id + 1, version, name, nbPortion, cookTime, bakeTime, pauseTime],
+      [
+        id + 1,
+        version,
+        name,
+        nbPortion,
+        preparationTime,
+        bakingTime,
+        breakTime,
+      ],
       (err, result) => {
-        if (err) console.log(err);
-        else res.send("Values inserted");
+        err ? console.log(err) : res.send(id + 1);
       }
     );
   };
 });
 
 // ================= READ RECIPE ======================
-
-//Get recipe details with its id and version
+//Get recipe details and ingredients with its id and version
 app.get("/details", (req, res) => {
   const recipeId = req.query.idRecipe;
   const version = req.query.version;
@@ -81,6 +75,7 @@ app.get("/details", (req, res) => {
     (err, result) => {
       if (err) console.log(err);
       else {
+        //array with all the ingredients (objects with the name, quantity and unit) of the recipe
         const ingr = result.map((recipe) => {
           return {
             nameI: recipe.nameI,
@@ -88,6 +83,7 @@ app.get("/details", (req, res) => {
             unit: recipe.unit,
           };
         });
+        //object that contain name, nbPortion etc of the recipe
         const recipe = {
           name: result[0].nameR,
           nbPortion: result[0].nbPortion,
@@ -101,6 +97,19 @@ app.get("/details", (req, res) => {
   );
 });
 
+//Get the name of the recipe
+app.get("/recipeName", (req, res) => {
+  const idRecipe = req.query.idRecipe;
+  db.query(
+    "SELECT name FROM recipe WHERE idRecipe = ?",
+    [idRecipe],
+    (err, result) => {
+      console.log(result);
+      err ? console.log(err) : res.send(result);
+    }
+  );
+});
+
 //Get all recipes but not the different versions
 app.get("/recipes", (req, res) => {
   db.query("SELECT * FROM recipe GROUP BY idRecipe", (err, result) => {
@@ -110,7 +119,7 @@ app.get("/recipes", (req, res) => {
 });
 
 // ================= READ VERSION ======================
-//Get all the versions of a recipe
+//Get all the versions of a recipe exept teh version taht we are watching
 app.get("/versions/", (req, res) => {
   const idRecipe = req.query.idRecipe;
   const idVersion = req.query.version;
@@ -118,8 +127,7 @@ app.get("/versions/", (req, res) => {
     "SELECT version FROM recipe WHERE idRecipe = ? AND version != ?",
     [idRecipe, idVersion],
     (err, result) => {
-      if (err) console.log(err);
-      else res.send(result);
+      err ? console.log(err) : res.send(result);
     }
   );
 });
@@ -128,76 +136,9 @@ app.get("/versions/", (req, res) => {
 //Get all the categories
 app.get("/categories", (req, res) => {
   db.query("SELECT * FROM category", (err, result) => {
-    if (err) console.log(err);
-    else res.send(result);
+    err ? console.log(err) : res.send(result);
   });
 });
 
 // ================= UPDATE RECIPE ======================
 // ================= DELETE RECIPE ======================
-
-// // Route to get all posts
-// app.get("/api/get", (req, res) => {
-//   db.query("SELECT * FROM recipe", (err, result) => {
-//     if (err) {
-//       console.log(err);
-//     }
-//     res.send(result);
-//   });
-// });
-
-// // Route to get one post
-// app.get("/api/getFromId/:id", (req, res) => {
-//   const id = req.params.id;
-//   db.query("SELECT * FROM posts WHERE id = ?", id, (err, result) => {
-//     if (err) {
-//       console.log(err);
-//     }
-//     res.send(result);
-//   });
-// });
-
-// // Route for creating the post
-// app.post("/api/create", (req, res) => {
-//   const username = req.body.userName;
-//   const title = req.body.title;
-//   const text = req.body.text;
-
-//   db.query(
-//     "INSERT INTO posts (title, post_text, user_name) VALUES (?,?,?)",
-//     [title, text, username],
-//     (err, result) => {
-//       if (err) {
-//         console.log(err);
-//       }
-//       console.log(result);
-//     }
-//   );
-// });
-
-// // Route to like a post
-// app.post("/api/like/:id", (req, res) => {
-//   const id = req.params.id;
-//   db.query(
-//     "UPDATE posts SET likes = likes + 1 WHERE id = ?",
-//     id,
-//     (err, result) => {
-//       if (err) {
-//         console.log(err);
-//       }
-//       console.log(result);
-//     }
-//   );
-// });
-
-// // Route to delete a post
-
-// app.delete("/api/delete/:id", (req, res) => {
-//   const id = req.params.id;
-
-//   db.query("DELETE FROM posts WHERE id= ?", id, (err, result) => {
-//     if (err) {
-//       console.log(err);
-//     }
-//   });
-// });
