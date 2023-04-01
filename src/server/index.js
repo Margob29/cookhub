@@ -58,7 +58,30 @@ app.post("/create", async (req, res) => {
         breakTime,
       ],
       (err, result) => {
-        err ? console.log(err) : res.send(id + 1);
+        err ? console.log(err) : res.send({ id: id + 1 });
+      }
+    );
+  };
+});
+
+//================= CREATE INGREDIENT ======================
+//Create ingredient and its link to a step
+app.post("/createIngredient", (req, res) => {
+  const { idStep, ingrName, quantity, unit } = req.body;
+  db.query(
+    "INSERT INTO ingredient (name) VALUES (?)",
+    [ingrName],
+    (err, result) => {
+      err ? console.log(err) : linkStepIngr(result.insertId);
+    }
+  );
+
+  const linkStepIngr = (idIngr) => {
+    db.query(
+      "INSERT INTO stepneed (idStep, idIngredient, quantity, unit) VALUES (?,?,?,?)",
+      [idStep, idIngr, quantity, unit],
+      (err, result) => {
+        err ? console.log(err) : res.sendStatus(201);
       }
     );
   };
@@ -84,6 +107,7 @@ app.get("/details", (req, res) => {
           };
         });
         //object that contain name, nbPortion etc of the recipe
+        console.log(result);
         const recipe = {
           name: result[0].nameR,
           nbPortion: result[0].nbPortion,
@@ -104,7 +128,6 @@ app.get("/recipeName", (req, res) => {
     "SELECT name FROM recipe WHERE idRecipe = ?",
     [idRecipe],
     (err, result) => {
-      console.log(result);
       err ? console.log(err) : res.send(result);
     }
   );
@@ -116,6 +139,31 @@ app.get("/recipes", (req, res) => {
     if (err) console.log(err);
     else res.send(result);
   });
+});
+
+//Get all the steps from a recipe
+app.get("/steps", (req, res) => {
+  const idRecipe = req.query.idRecipe;
+  db.query(
+    "SELECT p.stepIndex, s.description FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep AND idRecipe=? AND idVersion=1",
+    [idRecipe],
+    (err, result) => {
+      console.log(result);
+      err ? console.log(err) : res.send(result);
+    }
+  );
+});
+
+//Get the ingredients of a step
+//TODO : finish the request
+app.get("/ingredients", (req, res) => {
+  const idRecipe = req.query.idRecipe;
+  const idStep = req.query.idStep;
+  db.query("SELECT "),
+    [idRecipe, idStep],
+    (err, result) => {
+      err ? console.log(err) : res.send(result);
+    };
 });
 
 // ================= READ VERSION ======================
@@ -142,3 +190,17 @@ app.get("/categories", (req, res) => {
 
 // ================= UPDATE RECIPE ======================
 // ================= DELETE RECIPE ======================
+//Delete step
+app.delete("delete/step", (req, res) => {
+  const idStep = req.body.idStep;
+  const idRecipe = req.body.idRecipe;
+  const idVersion = req.body.idVersion;
+
+  bd.query(
+    "DELETE FROM preparation WHERE idStep = ? AND idRecipe = ? AND idVersion = ?",
+    [idStep, idRecipe, idVersion],
+    (err, result) => {
+      err ? console.log(err) : "";
+    }
+  );
+});

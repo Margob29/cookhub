@@ -1,13 +1,12 @@
 import { Icon } from "@iconify/react";
 import "../../../App.css";
 import logo from "../../../images/logo_violet.png";
+import { useState } from "react";
 
 export default function StepCreation() {
+  const [description, setDescription] = useState("");
   return (
-    //TODO : remplacer l'icon + par une croix pour supprimer un ingrédient
-    //TODO : agrandir la zone de descritpion pour que ça s'écrive en long et pas en ligne
-    //TODO : checker le hover du bouton modifier qui veut pas se mettre comme je veux
-    //TODO : peut-être mettre autre chose à la place du logo dans le titre
+    //TODO : agrandir la zone de description pour que ça s'écrive en long et pas en ligne
     //TODO : faire la confirmation d'annulation
     //TODO : regarder le margin pour le responsive
     <div className="container d-flex justify-content-center p-0">
@@ -15,10 +14,19 @@ export default function StepCreation() {
         <form>
           <fieldset className="form p-4 m-lg-4 formcontainer">
             <legend className="formtitle mb-3">
-              <Icon icon="col-xl-8" color={"#5837B3"} width={40} />
-              <img src={logo} alt="Logo" className="logo" />
+              <Icon
+                icon="icon-park-outline:cook"
+                color={"#5837B3"}
+                width={40}
+                className="logo"
+              />
               Comment réaliser cette étape ?
-              <img src={logo} alt="Logo" className="logo" />
+              <Icon
+                icon="icon-park-outline:cook"
+                color={"#5837B3"}
+                width={40}
+                className="logo"
+              />
             </legend>
             <div className="row mb-3 d-flex justify-content-center">
               <h4 className="labelname mb-4">Ingrédients nécessaires :</h4>
@@ -30,13 +38,11 @@ export default function StepCreation() {
                     <a href="#" className="btnModify col-3 m-0">
                       Modifier
                     </a>
-                  </div>
-                  <hr />
-                  <div className="row">
-                    <span className="col-3 ingredients">Farine</span>
-                    <span className="col-3 ingredients">150g</span>
-                    <a href="#" className="btnModify col-3 m-0">
-                      Modifier
+                    <a
+                      href="#"
+                      className="col-3 d-flex align-items-center justify-content-center"
+                    >
+                      <Icon icon="charm:cross" width={20} color={"#5837B3"} />
                     </a>
                   </div>
                   <hr />
@@ -46,6 +52,12 @@ export default function StepCreation() {
                     <a href="#" className="btnModify col-3 m-0">
                       Modifier
                     </a>
+                    <a
+                      href="#"
+                      className="col-3 d-flex align-items-center justify-content-center"
+                    >
+                      <Icon icon="charm:cross" width={20} color={"#5837B3"} />
+                    </a>
                   </div>
                   <hr />
                   <div className="row">
@@ -54,13 +66,26 @@ export default function StepCreation() {
                     <a href="#" className="btnModify col-3 m-0">
                       Modifier
                     </a>
-                    <div className="col-3 d-flex align-items-center justify-content-center">
-                      <Icon
-                        icon="material-symbols:add-circle-outline-rounded"
-                        width={20}
-                        color={"#5837B3"}
-                      />
-                    </div>
+                    <a
+                      href="#"
+                      className="col-3 d-flex align-items-center justify-content-center"
+                    >
+                      <Icon icon="charm:cross" width={20} color={"#5837B3"} />
+                    </a>
+                  </div>
+                  <hr />
+                  <div className="row">
+                    <span className="col-3 ingredients">Farine</span>
+                    <span className="col-3 ingredients">150g</span>
+                    <a href="#" className="btnModify col-3 m-0">
+                      Modifier
+                    </a>
+                    <a
+                      href="#"
+                      className="col-3 d-flex align-items-center justify-content-center"
+                    >
+                      <Icon icon="charm:cross" width={20} color={"#5837B3"} />
+                    </a>
                   </div>
                   <hr />
                 </div>
@@ -84,8 +109,15 @@ export default function StepCreation() {
                   </div>
                 </div>
               </div>
-              <label className="labelname">Description :</label>
-              <input type="textarea" className="labelname" />
+              <label
+                className="labelname"
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
+              >
+                Description :
+              </label>
+              <textarea className="labelname" />
             </div>
             <div className="buttons">
               <a className="btnDiscard" href="/creationprogress">

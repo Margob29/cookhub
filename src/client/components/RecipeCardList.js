@@ -7,8 +7,3 @@ export default function RecipeCardList(props) {
     return <RecipeCard key={index} recipe={recipe} />;
   });
 }
-
-// Composant parent : RecipeCardList
-// return recipes.map((recipe, index) => {
-//   return <RecipeCard recipe={recipe}></RecipeCard>;
-// });

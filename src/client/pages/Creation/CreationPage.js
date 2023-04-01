@@ -2,18 +2,19 @@ import "../../../App.css";
 import logo from "../../../images/logo_violet.png";
 import { useState, useEffect } from "react";
 import Axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 
 export default function CreationForm() {
   //TODO : faire en sorte que lorsqu'il manque des infos la validation ne se fait pas, l'utilisateur soit informé
   //TODO : ajouter la redirection vers la page creationprogress/id
   //TODO : voir comment récupérer l'ID de la recette qu'on vient de créer
-  const [name, setName] = useState("gbfnhtjy");
-  const [nbPortions, setNbPortions] = useState(0);
-  const [preparationTime, setPreparationTime] = useState(0);
+  const [name, setName] = useState();
+  const [nbPortions, setNbPortions] = useState();
+  const [preparationTime, setPreparationTime] = useState();
   const [bakingTime, setBakingTime] = useState(0);
   const [breakTime, setBreakTime] = useState(0);
   const [listCategories, setListCategories] = useState([]);
+  const navigate = useNavigate();
 
   const getAllCategories = () => {
     Axios.get("http://localhost:3001/categories")
@@ -37,9 +38,14 @@ export default function CreationForm() {
           bakingTime: bakingTime,
           pauseTime: breakTime,
         },
-      }).catch((error) => {
-        console.log(error);
-      });
+      })
+        .then((res) => {
+          //redirection to the next page
+          navigate(`/creationprogress/${res.data.id}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
