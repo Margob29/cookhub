@@ -25,9 +25,12 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route path="/details/:id/:version" element={<RecipePage />} />
           <Route path="/creation" element={<CreationForm />} />
-          <Route path="/creationprogress/:id" element={<CreationProgress />} />
-          <Route path="/creationstep" element={<StepCreation />} />
-          <Route path="/addingredient" element={<AddIngredient />} />
+          <Route
+            path="/creationprogress/:idRecipe"
+            element={<CreationProgress />}
+          />
+          <Route path="/creationstep/:idRecipe/:idStep" element={<StepCreation />} />
+          <Route path="/addingredient/:idRecipe/:idStep" element={<AddIngredient />} />
           <Route path="*" element={<Error />} />
         </Routes>
       </BrowserRouter>

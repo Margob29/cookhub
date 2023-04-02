@@ -25,6 +25,10 @@ app.use(cors());
 //to say that datas are transmitted in json format
 app.use(express.json());
 
+// #############################################################################################################
+//                                              CREATE
+// #############################################################################################################
+
 // ================= CREATE RECIPE ======================
 //req = request to grab something from the frontend
 //res =  response ton send something to the frontend
@@ -66,8 +70,8 @@ app.post("/create", async (req, res) => {
 
 //================= CREATE INGREDIENT ======================
 //Create ingredient and its link to a step
-app.post("/createIngredient", (req, res) => {
-  const { idStep, ingrName, quantity, unit } = req.body;
+app.post("/ingredient", (req, res) => {
+  const { idStep, ingrName, quantity, unit } = req.body.params;
   db.query(
     "INSERT INTO ingredient (name) VALUES (?)",
     [ingrName],
@@ -86,6 +90,17 @@ app.post("/createIngredient", (req, res) => {
     );
   };
 });
+
+//================= CREATE STEP ======================
+app.post("/step", (req, res) => {
+  db.query("INSERT INTO step (description) VALUE (null)", (err, result) => {
+    err ? console.log(err) : res.send({ idStep: result.insertId });
+  });
+});
+
+// #############################################################################################################
+//                                              READ
+// #############################################################################################################
 
 // ================= READ RECIPE ======================
 //Get recipe details and ingredients with its id and version
@@ -157,18 +172,19 @@ app.get("/steps", (req, res) => {
 //Get the ingredients of a step
 //TODO : finish the request
 app.get("/ingredients", (req, res) => {
-  const idRecipe = req.query.idRecipe;
   const idStep = req.query.idStep;
-  db.query("SELECT "),
-    [idRecipe, idStep],
+  db.query(
+    "SELECT i.name, sn.quantity, sn.unit FROM ingredient AS i INNER JOIN stepneed AS sn ON sn.idIngredient=i.idIngredient WHERE sn.idStep=?",
+    [idStep],
     (err, result) => {
       err ? console.log(err) : res.send(result);
-    };
+    }
+  );
 });
 
 // ================= READ VERSION ======================
 //Get all the versions of a recipe exept teh version taht we are watching
-app.get("/versions/", (req, res) => {
+app.get("/versions", (req, res) => {
   const idRecipe = req.query.idRecipe;
   const idVersion = req.query.version;
   db.query(
@@ -188,10 +204,40 @@ app.get("/categories", (req, res) => {
   });
 });
 
-// ================= UPDATE RECIPE ======================
+// #############################################################################################################
+//                                              UPDATE
+// #############################################################################################################
+
+// ================= UPDATE STEP ======================
+app.put("/step", (req, res) => {
+  const { description, idStep, idRecipe } = req.body.params;
+  console.log(description);
+  db.query(
+    "UPDATE step SET description= ? WHERE idStep = ?",
+    [description, idStep],
+    (err, result) => {
+      err ? console.log(err) : preparation(idRecipe, idStep);
+    }
+  );
+
+  const preparation = (idRecipe, idStep) => {
+    db.query(
+      "INSERT INTO preparation (idRecipe, idVersion, idStep, stepIndex) SELECT ?, 1, ?, IF(MAX(stepIndex) IS NULL, 1, MAX(stepIndex)+1) FROM preparation WHERE idRecipe=? AND idVersion =1; ",
+      [idRecipe, idStep, idRecipe],
+      (err, result) => {
+        err ? console.log(err) : res.sendStatus(201);
+      }
+    );
+  };
+});
+
+// #############################################################################################################
+//                                              DELETE
+// #############################################################################################################
+
 // ================= DELETE RECIPE ======================
 //Delete step
-app.delete("delete/step", (req, res) => {
+app.delete("/step", (req, res) => {
   const idStep = req.body.idStep;
   const idRecipe = req.body.idRecipe;
   const idVersion = req.body.idVersion;

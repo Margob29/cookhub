@@ -3,19 +3,21 @@ import { Icon } from "@iconify/react";
 import logo from "../../../images/logo_violet.png";
 import Axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import StepCard from "../../components/StepCard";
 
 export default function CreationProgress() {
-  let { id } = useParams();
+  let { idRecipe } = useParams();
   const [name, setName] = useState("");
   const [listSteps, setListSteps] = useState([]);
+  const navigate = useNavigate();
 
   const getName = (id) => {
     Axios.get("http://localhost:3001/recipeName/", {
       params: { idRecipe: id },
     })
       .then((response) => {
+        console.log(response);
         setName(response.data[0].name);
       })
       .catch((error) => {
@@ -24,7 +26,7 @@ export default function CreationProgress() {
   };
 
   const getSteps = (id) => {
-    Axios.get("http://localhost:3001/steps/", {
+    Axios.get("http://localhost:3001/steps", {
       params: { idRecipe: id },
     })
       .then((response) => {
@@ -35,9 +37,20 @@ export default function CreationProgress() {
       });
   };
 
+  const AddStep = () => {
+    Axios.post("http://localhost:3001/step")
+      .then((res) => {
+        //redirection to the next page
+        navigate(`/creationstep/${idRecipe}/${res.data.idStep}`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
-    getName(id);
-    getSteps(id);
+    getName(idRecipe);
+    getSteps(idRecipe);
   }, []);
 
   return (
@@ -73,8 +86,9 @@ export default function CreationProgress() {
               <div className="card-body">
                 <h3 className="card-title">Ajouter une étape</h3>
                 <a
-                  href="/creationstep"
+                  type="submit"
                   className="d-flex justify-content-center"
+                  onClick={AddStep}
                 >
                   <Icon
                     icon="material-symbols:add-circle-outline-rounded"

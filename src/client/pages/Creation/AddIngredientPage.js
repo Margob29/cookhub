@@ -1,11 +1,38 @@
 import "../../../App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
+import { useNavigate, useParams } from "react-router-dom";
+import Axios from "axios";
 
 export default function AddIngredient() {
-  const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState(0);
-  const [unit, setUnit] = useState("");
+  const [name, setName] = useState();
+  const [quantity, setQuantity] = useState();
+  const [unit, setUnit] = useState();
+  const navigate = useNavigate();
+  let { idRecipe, idStep } = useParams();
+
+  const AddIngredient = () => {
+    if (!name || !quantity || !unit) {
+      //TODO : empêcher la validation
+    } else {
+      console.log(idStep);
+      Axios.post("http://localhost:3001/ingredient", {
+        params: {
+          idStep: idStep,
+          ingrName: name,
+          quantity: quantity,
+          unit: unit,
+        },
+      })
+        .then(() => {
+          navigate(`/creationprogress/${idRecipe}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
   return (
     //TODO : faire la confirmation d'annulation
     <div className="container d-flex justify-content-center">
@@ -33,8 +60,8 @@ export default function AddIngredient() {
                 <label className="me-2 labelname">Nom :</label>
                 <input
                   type="text"
-                  onChange={(e) => {
-                    setName(e.target.value);
+                  onChange={(event) => {
+                    setName(event.target.value);
                   }}
                 />
               </div>
@@ -44,8 +71,8 @@ export default function AddIngredient() {
                 <label className="me-2 labelname">Quantité :</label>
                 <input
                   type="number"
-                  onChange={(e) => {
-                    setQuantity(e.target.value);
+                  onChange={(event) => {
+                    setQuantity(event.target.value);
                   }}
                 />
               </div>
@@ -53,8 +80,8 @@ export default function AddIngredient() {
                 <label className="me-2 labelname">Unité : </label>
                 <input
                   type="text"
-                  onChange={(e) => {
-                    setUnit(e.target.value);
+                  onChange={(event) => {
+                    setUnit(event.target.value);
                   }}
                 />
               </div>
@@ -63,7 +90,7 @@ export default function AddIngredient() {
               <a className="btnDiscard" href="/creationstep">
                 Annuler
               </a>
-              <a className="btnSubmit" type="submit" href="/creationstep">
+              <a className="btnSubmit" type="submit" onClick={AddIngredient}>
                 Ajouter l'ingrédient
               </a>
             </div>

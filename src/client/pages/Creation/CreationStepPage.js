@@ -1,10 +1,48 @@
 import { Icon } from "@iconify/react";
 import "../../../App.css";
 import logo from "../../../images/logo_violet.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function StepCreation() {
   const [description, setDescription] = useState("");
+  const [ingredientsList, setIngredientsList] = useState("");
+  let { idRecipe, idStep } = useParams();
+  const navigate = useNavigate();
+
+  const getIngredients = () => {
+    Axios.get("http://localhost:3001/ingredients", {
+      params: { idStep: idStep },
+    })
+      .then((response) => {
+        setIngredientsList(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const UpdateStep = () => {
+    Axios.put("http://localhost:3001/step", {
+      params: { description, idStep, idRecipe },
+    })
+      .then(() => {
+        navigate(`/creationprogress/${idRecipe}`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const toAddIngredient = () => {
+    navigate(`/addingredient/${idRecipe}/${idStep}`);
+  };
+
+  useEffect(() => {
+    getIngredients();
+  }, []);
+
   return (
     //TODO : agrandir la zone de description pour que ça s'écrive en long et pas en ligne
     //TODO : faire la confirmation d'annulation
@@ -96,8 +134,9 @@ export default function StepCreation() {
                         Ajouter un ingrédient
                       </h5>
                       <a
-                        href="/addingredient"
                         className="d-flex justify-content-center"
+                        type="submit"
+                        onClick={toAddIngredient}
                       >
                         <Icon
                           icon="material-symbols:add-circle-outline-rounded"
@@ -109,21 +148,19 @@ export default function StepCreation() {
                   </div>
                 </div>
               </div>
-              <label
+              <label className="labelname">Description :</label>
+              <textarea
                 className="labelname"
                 onChange={(e) => {
                   setDescription(e.target.value);
                 }}
-              >
-                Description :
-              </label>
-              <textarea className="labelname" />
+              />
             </div>
             <div className="buttons">
               <a className="btnDiscard" href="/creationprogress">
                 Annuler
               </a>
-              <a className="btnSubmit" type="submit" href="/creationprogress">
+              <a className="btnSubmit" type="submit" onClick={UpdateStep}>
                 Valider l'étape
               </a>
             </div>

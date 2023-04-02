@@ -2,7 +2,7 @@ import "../../../App.css";
 import logo from "../../../images/logo_violet.png";
 import { useState, useEffect } from "react";
 import Axios from "axios";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function CreationForm() {
   //TODO : faire en sorte que lorsqu'il manque des infos la validation ne se fait pas, l'utilisateur soit informé
@@ -29,6 +29,7 @@ export default function CreationForm() {
   //add a recipe with parametres from the form
   const addRecipe = () => {
     if (!name || !nbPortions || !preparationTime) {
+      //TODO : empêcher la validation
     } else {
       Axios.post("http://localhost:3001/create", {
         params: {
