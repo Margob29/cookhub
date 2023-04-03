@@ -25,7 +25,7 @@ export default function AddIngredient() {
         },
       })
         .then(() => {
-          navigate(`/creationprogress/${idRecipe}`);
+          navigate(`/creationstep/${idRecipe}/${idStep}`);
         })
         .catch((error) => {
           console.log(error);

@@ -17,7 +17,6 @@ export default function CreationProgress() {
       params: { idRecipe: id },
     })
       .then((response) => {
-        console.log(response);
         setName(response.data[0].name);
       })
       .catch((error) => {

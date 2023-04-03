@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 import Axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Ingredient from "../../components/Ingredient";
+import IngredientDetails from "../../components/IngredientDetails";
 
 export default function RecipePage() {
   let { id, version } = useParams();
@@ -114,7 +114,9 @@ export default function RecipePage() {
             <h4 className="labelname mt-2">Ingrédients nécessaires :</h4>
             <div className="row text-center">
               {listIngredients.map((ingredient, index) => {
-                return <Ingredient key={index} ingredient={ingredient} />;
+                return (
+                  <IngredientDetails key={index} ingredient={ingredient} />
+                );
               })}
             </div>
           </div>

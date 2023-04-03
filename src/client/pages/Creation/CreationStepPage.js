@@ -4,6 +4,7 @@ import logo from "../../../images/logo_violet.png";
 import { useEffect, useState } from "react";
 import Axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import IngredientStep from "../../components/IngredientStep";
 
 export default function StepCreation() {
   const [description, setDescription] = useState("");
@@ -70,62 +71,18 @@ export default function StepCreation() {
               <h4 className="labelname mb-4">Ingrédients nécessaires :</h4>
               <div className="row text-center">
                 <div className="col-xl-9 col-sm-12">
-                  <div className="row">
-                    <span className="col-3 ingredients">Farine</span>
-                    <span className="col-3 ingredients">150g</span>
-                    <a href="#" className="btnModify col-3 m-0">
-                      Modifier
-                    </a>
-                    <a
-                      href="#"
-                      className="col-3 d-flex align-items-center justify-content-center"
-                    >
-                      <Icon icon="charm:cross" width={20} color={"#5837B3"} />
-                    </a>
-                  </div>
-                  <hr />
-                  <div className="row">
-                    <span className="col-3 ingredients">Farine</span>
-                    <span className="col-3 ingredients">150g</span>
-                    <a href="#" className="btnModify col-3 m-0">
-                      Modifier
-                    </a>
-                    <a
-                      href="#"
-                      className="col-3 d-flex align-items-center justify-content-center"
-                    >
-                      <Icon icon="charm:cross" width={20} color={"#5837B3"} />
-                    </a>
-                  </div>
-                  <hr />
-                  <div className="row">
-                    <span className="col-3 ingredients">Farine</span>
-                    <span className="col-3 ingredients">150g</span>
-                    <a href="#" className="btnModify col-3 m-0">
-                      Modifier
-                    </a>
-                    <a
-                      href="#"
-                      className="col-3 d-flex align-items-center justify-content-center"
-                    >
-                      <Icon icon="charm:cross" width={20} color={"#5837B3"} />
-                    </a>
-                  </div>
-                  <hr />
-                  <div className="row">
-                    <span className="col-3 ingredients">Farine</span>
-                    <span className="col-3 ingredients">150g</span>
-                    <a href="#" className="btnModify col-3 m-0">
-                      Modifier
-                    </a>
-                    <a
-                      href="#"
-                      className="col-3 d-flex align-items-center justify-content-center"
-                    >
-                      <Icon icon="charm:cross" width={20} color={"#5837B3"} />
-                    </a>
-                  </div>
-                  <hr />
+                  {ingredientsList.length > 0 ? (
+                    ingredientsList.map((ingredient, index) => {
+                      return (
+                        <IngredientStep key={index} ingredient={ingredient} />
+                      );
+                    })
+                  ) : (
+                    <div className="textStyle">
+                      Il n'y a pas d'ingrédients pour cette étape. Hésite pas à
+                      en ajouter si tu as besoin de quelque chose !
+                    </div>
+                  )}
                 </div>
                 <div className="col-xl-3 col-md-6 col-sm-6 d-flex align-items-center justify-content-center">
                   <div className="card">

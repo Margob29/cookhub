@@ -1,6 +1,6 @@
 import "../../App.css";
 
-export default function Ingredient(props) {
+export default function IngredientDetails(props) {
   return (
     <div className="col-xl-6 col-sm-12 mt-3">
       <div className="rectIngredient">
