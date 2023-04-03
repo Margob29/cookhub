@@ -235,17 +235,28 @@ app.put("/step", (req, res) => {
 //                                              DELETE
 // #############################################################################################################
 
-// ================= DELETE RECIPE ======================
-//Delete step
+// ================= DELETE STEP ======================
 app.delete("/step", (req, res) => {
-  const idStep = req.body.idStep;
-  const idRecipe = req.body.idRecipe;
-  const idVersion = req.body.idVersion;
+  const { idStep, idRecipe, idVersion } = req.body.params;
 
-  bd.query(
+  db.query(
     "DELETE FROM preparation WHERE idStep = ? AND idRecipe = ? AND idVersion = ?",
     [idStep, idRecipe, idVersion],
     (err, result) => {
+      err ? console.log(err) : "";
+    }
+  );
+});
+
+// ================= DELETE INGREDIENT ======================
+app.delete("/ingredient", (req, res) => {
+  const { idIngredient } = req.body.params;
+
+  db.query(
+    "DELETE FROM ingredient WHERE idIngredient = ?",
+    [idIngredient],
+    (err, result) => {
+      console.log(result);
       err ? console.log(err) : "";
     }
   );

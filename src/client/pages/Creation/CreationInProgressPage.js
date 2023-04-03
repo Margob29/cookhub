@@ -52,6 +52,10 @@ export default function CreationProgress() {
     getSteps(idRecipe);
   }, []);
 
+  const ToDetails = () => {
+    navigate(`/details/${idRecipe}/1`);
+  };
+
   return (
     //TODO : faire la confirmation d'annulation
     <div className="container d-flex justify-content-center m-3">
@@ -103,7 +107,7 @@ export default function CreationProgress() {
           <a className="btnDiscard" href="/">
             Abandonner
           </a>
-          <a className="btnSubmit" type="submit" href="/details/2">
+          <a className="btnSubmit" type="submit" onClick={ToDetails}>
             Finaliser la recette
           </a>
         </div>

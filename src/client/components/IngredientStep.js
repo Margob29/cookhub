@@ -1,7 +1,16 @@
 import "../../App.css";
 import { Icon } from "@iconify/react";
+import Axios from "axios";
 
 export default function IngredientStep(props) {
+  const DeleteIngredient = (idIngredient) => {
+    Axios.delete("http://localhost:3001/ingredient", {
+      params: { idIngredient },
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+
   return (
     <div className="rectIngredient mb-2">
       <div className="row">
@@ -13,10 +22,16 @@ export default function IngredientStep(props) {
           Modifier
         </a>
         <a
-          href="#"
           className="col-2 d-flex align-items-center justify-content-center"
+          onClick={DeleteIngredient}
+          type="submit"
         >
-          <Icon icon="charm:cross" width={20} color={"#5837B3"} />
+          <Icon
+            icon="charm:cross"
+            width={20}
+            color={"#5837B3"}
+            onClick={DeleteIngredient(props.ingredient.idIngredient)}
+          />
         </a>
       </div>
     </div>
