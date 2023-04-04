@@ -6,12 +6,10 @@ export default function RecipePage() {
   let { id, version } = useParams();
 
   return (
-    <div>
-      <RecipeDetails
-        id={id}
-        version={version}
-        buttons={["Commencer à cuisiner", "Modifier la recette"]}
-      />
-    </div>
+    <RecipeDetails
+      id={id}
+      version={version}
+      buttons={["Confirmer la création de la recette"]}
+    />
   );
 }

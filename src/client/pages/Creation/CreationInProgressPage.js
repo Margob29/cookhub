@@ -53,7 +53,7 @@ export default function CreationProgress() {
   }, []);
 
   const ToDetails = () => {
-    navigate(`/details/${idRecipe}/1`);
+    navigate(`/confirmation/${idRecipe}/1`);
   };
 
   return (

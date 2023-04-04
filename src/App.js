@@ -13,6 +13,7 @@ import StepCreation from "./client/pages/Creation/CreationStepPage";
 import AddIngredient from "./client/pages/Creation/AddIngredientPage";
 import RecipePage from "./client/pages/Home/RecipePage";
 import Error from "./client/pages/Error";
+import Confirmation from "./client/pages/Creation/Confirmation";
 
 function App() {
   return (
@@ -24,13 +25,20 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/details/:id/:version" element={<RecipePage />} />
+          <Route path="/confirmation/:id/:version" element={<Confirmation />} />
           <Route path="/creation" element={<CreationForm />} />
           <Route
             path="/creationprogress/:idRecipe"
             element={<CreationProgress />}
           />
-          <Route path="/creationstep/:idRecipe/:idStep" element={<StepCreation />} />
-          <Route path="/addingredient/:idRecipe/:idStep" element={<AddIngredient />} />
+          <Route
+            path="/creationstep/:idRecipe/:idStep"
+            element={<StepCreation />}
+          />
+          <Route
+            path="/addingredient/:idRecipe/:idStep"
+            element={<AddIngredient />}
+          />
           <Route path="*" element={<Error />} />
         </Routes>
       </BrowserRouter>
