@@ -1,5 +1,6 @@
 import "../../App.css";
 
+// Error page if the url is not correct and doesn't exist in the routes.
 export default function Error() {
   return (
     <div className="container d-flex justify-content-center m-3">

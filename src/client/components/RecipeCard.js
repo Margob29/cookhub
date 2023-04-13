@@ -2,12 +2,13 @@ import "../../App.css";
 import { Icon } from "@iconify/react";
 import pie from "../../images/p.jpeg";
 
+// Card to dispaly a recipe on the home page
 export default function RecipeCard(props) {
-  const { recipe } = props; // = {recipe:""}
+  // Get juste the recipe object from the props
+  const { recipe } = props;
   return (
-    //TODO : superposer les coeurs "like" sur la photo de la recette
-    //TODO : mettre le href à jour selon l'id de la recette en question
     <div className="col-xl-3 col-md-6 col-sm-6 p-0">
+      {/* Link to the details of the recipe  */}
       <a
         href={"/details/" + recipe.idRecipe + "/" + recipe.version}
         className="text-decoration-none"
@@ -17,10 +18,10 @@ export default function RecipeCard(props) {
           <img src={pie} className="card-img-top" />
           <div className="card-body">
             <div className="row">
-              <div className="col-9">
-                <h5 className="card-title cardTitle">{recipe.name}</h5>
+              <div className="col-10 pe-1">
+                <h5 className="card-title text-truncate">{recipe.name}</h5>
               </div>
-              <div className="col-3">
+              <div className="col-1 m-0 p-0">
                 <Icon
                   icon="mdi:cards-heart-outline"
                   color={"#A20041"}

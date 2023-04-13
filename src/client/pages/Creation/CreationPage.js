@@ -4,10 +4,8 @@ import { useState, useEffect } from "react";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// Form for creation with classic information for the recipe
 export default function CreationForm() {
-  //TODO : faire en sorte que lorsqu'il manque des infos la validation ne se fait pas, l'utilisateur soit informé
-  //TODO : ajouter la redirection vers la page creationprogress/id
-  //TODO : voir comment récupérer l'ID de la recette qu'on vient de créer
   const [name, setName] = useState();
   const [nbPortions, setNbPortions] = useState();
   const [preparationTime, setPreparationTime] = useState();
@@ -16,6 +14,7 @@ export default function CreationForm() {
   const [listCategories, setListCategories] = useState([]);
   const navigate = useNavigate();
 
+  // Function to get informations from the DB
   const getAllCategories = () => {
     Axios.get("http://localhost:3001/categories")
       .then((response) => {
@@ -26,7 +25,7 @@ export default function CreationForm() {
       });
   };
 
-  //add a recipe with parametres from the form
+  // Function to add a recipe with parametres from the form
   const addRecipe = () => {
     if (!name || !nbPortions || !preparationTime) {
       //TODO : empêcher la validation
@@ -50,14 +49,12 @@ export default function CreationForm() {
     }
   };
 
+  // Activate function when the page is charged
   useEffect(() => {
     getAllCategories();
   }, []);
 
   return (
-    //TODO : mettre tous les champs en required
-    //TODO : faire la confirmation d'annulation
-
     <div className="container d-flex justify-content-center">
       <div className="col-sm-12 col-lg-8">
         <form>
@@ -69,7 +66,7 @@ export default function CreationForm() {
             </legend>
             <div className="row mb-3 d-flex justify-content-center">
               <div className="col-4">
-                <label className="me-2 labelname">Nom de la recette :</label>
+                <label className="me-2 labelname">Nom de la recette* :</label>
               </div>
               <div className="col-7">
                 <input
@@ -82,22 +79,9 @@ export default function CreationForm() {
                 />{" "}
               </div>
             </div>
-            {/* <div className="col-xl-6 col-md-6 col-sm-12 mb-3">
-              <label className="me-2 labelname">Catégories</label>
-              <select className="labelname" id="category">
-                <option value="">-- Choisir --</option>
-                {listCategories.map((categ, index) => {
-                  return (
-                    <option value={categ.idCategory} key={index}>
-                      {categ.name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div> */}
             <div className="row mb-3 d-flex justify-content-center">
               <div className="col-4">
-                <label className="me-2 labelname">Nombre de portions :</label>
+                <label className="me-2 labelname">Nombre de portions* :</label>
               </div>
               <div className="col-7">
                 <input
@@ -112,7 +96,9 @@ export default function CreationForm() {
             </div>
             <div className="row mb-3 d-flex justify-content-center">
               <div className="col-4">
-                <label className="me-2 labelname">Temps de préparation :</label>
+                <label className="me-2 labelname">
+                  Temps de préparation* :
+                </label>
               </div>
               <div className="col-7">
                 <input
@@ -141,7 +127,7 @@ export default function CreationForm() {
                 <span className="labelname"> minutes.</span>
               </div>
             </div>
-            <div className="row   mb-3 d-flex justify-content-center">
+            <div className="row mb-3 d-flex justify-content-center">
               <div className="col-4">
                 <label className="me-2 labelname">Temps de pause :</label>
               </div>
@@ -156,10 +142,52 @@ export default function CreationForm() {
                 <span className="labelname"> minutes.</span>
               </div>
             </div>
+            <div className="row mb-3 d-flex justify-content-center">
+              <div className="col-4">
+                <label className="me-2 labelname">Type de plat*: </label>
+              </div>
+              {/* Possibility to choose a type of dish */}
+              <div className="col-7">
+                <select className="labelname" name="dish" id="dish">
+                  <option value="">-- Choisir --</option>
+                  {listCategories.map((categ, index) => {
+                    if (categ.idCategory <= 7) {
+                      return (
+                        <option value={categ.idCategory} key={index}>
+                          {categ.name}
+                        </option>
+                      );
+                    }
+                  })}
+                </select>
+              </div>
+            </div>
+            {/* Possibility to chosse that the recipe has a special diet */}
+            <div className="row mb-3 d-flex justify-content-center">
+              <div className="col-4">
+                <label className="me-2 labelname">Régime: </label>
+              </div>
+              <div className="col-7">
+                <select className="labelname" name="diet" id="diet" multiple>
+                  <option value="">-- Choisir --</option>
+                  {listCategories.map((categ, index) => {
+                    if (categ.idCategory >= 7) {
+                      return (
+                        <option value={categ.idCategory} key={index}>
+                          {categ.name}
+                        </option>
+                      );
+                    }
+                  })}
+                </select>
+              </div>
+            </div>
+            <p className="textStyle required">* : champs obligatoires</p>
             <div className="buttons">
               <a className="btnDiscard" href="/">
                 Abandonner
               </a>
+              {/* Button to add the recipe to the DB */}
               <a className="btnSubmit" type="submit" onClick={addRecipe}>
                 Suivant
               </a>

@@ -15,11 +15,10 @@ import RecipePage from "./client/pages/Home/RecipePage";
 import Error from "./client/pages/Error";
 import Confirmation from "./client/pages/Creation/Confirmation";
 
+// Router to the differents links into the web site
 function App() {
   return (
     <div>
-      {/* <CHNavbar></CHNavbar>
-      <RecipePage></RecipePage> */}
       <BrowserRouter>
         <CHNavbar />{" "}
         <Routes>
@@ -39,6 +38,7 @@ function App() {
             path="/addingredient/:idRecipe/:idStep"
             element={<AddIngredient />}
           />
+          {/* If any path above correspond, link to the page Error */}
           <Route path="*" element={<Error />} />
         </Routes>
       </BrowserRouter>

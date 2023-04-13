@@ -1,6 +1,8 @@
 import "../../App.css";
 
+// Details of an ingredient, display with the details of a recipe
 export default function IngredientDetails(props) {
+  // Props get an ingredient from the BD which is display
   return (
     <div className="col-xl-6 col-sm-12 mt-3">
       <div className="rectIngredient">

@@ -6,12 +6,17 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import StepCard from "../../components/StepCard";
 
+//TODO : Modifier une step ==> primordial pour les ingrédients
+
+// Page to display the creation progress of the recipe.
+// We can see the name and the steps. To see ingredients we have to click on the step
 export default function CreationProgress() {
   let { idRecipe } = useParams();
   const [name, setName] = useState("");
   const [listSteps, setListSteps] = useState([]);
   const navigate = useNavigate();
 
+  // Functions to get elements from the BD
   const getName = (id) => {
     Axios.get("http://localhost:3001/recipeName/", {
       params: { idRecipe: id },
@@ -36,6 +41,7 @@ export default function CreationProgress() {
       });
   };
 
+  // Functions add and delete elements to the BD
   const AddStep = () => {
     Axios.post("http://localhost:3001/step")
       .then((res) => {
@@ -47,17 +53,30 @@ export default function CreationProgress() {
       });
   };
 
+  const DeleteRecipe = () => {
+    Axios.delete("http://localhost:3001/recipe", {
+      params: { idRecipe: idRecipe },
+    })
+      .then(navigate("/"))
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // Activate functions when the page is charged
   useEffect(() => {
     getName(idRecipe);
     getSteps(idRecipe);
   }, []);
 
+  // Navigation to the details of the recipe before validating
   const ToDetails = () => {
-    navigate(`/confirmation/${idRecipe}/1`);
+    if (listSteps.length == 0) {
+      //TODO: avertir qu'il faut au moins une étape
+    } else navigate(`/confirmation/${idRecipe}/1`);
   };
 
   return (
-    //TODO : faire la confirmation d'annulation
     <div className="container d-flex justify-content-center m-3">
       <div className="col-sm-12 col-lg-8 formcontainer p-4">
         <h4 className="formtitle">
@@ -76,9 +95,10 @@ export default function CreationProgress() {
           />
         </h4>
         <p className="text-center labelname">
-          Explique nous comment faire pour réaliser ta recette !
+          Dis nous comment faire pour réaliser ta recette !
         </p>
         <div className="row">
+          {/* Display all the steps created with cards */}
           {listSteps.length > 0
             ? listSteps.map((step, index) => {
                 return <StepCard key={index} step={step} />;
@@ -88,6 +108,7 @@ export default function CreationProgress() {
             <div className="card mb-2 cardstyle">
               <div className="card-body">
                 <h3 className="card-title">Ajouter une étape</h3>
+                {/* Button to add a step */}
                 <a
                   type="submit"
                   className="d-flex justify-content-center"
@@ -104,7 +125,8 @@ export default function CreationProgress() {
           </div>
         </div>
         <div className="buttons">
-          <a className="btnDiscard" href="/">
+          {/* Button to delete a recipe */}
+          <a className="btnDiscard" type="submit" onClick={DeleteRecipe}>
             Abandonner
           </a>
           <a className="btnSubmit" type="submit" onClick={ToDetails}>

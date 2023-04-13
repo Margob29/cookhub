@@ -1,11 +1,10 @@
-// librairies for BD
+// Librairies for BD
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
-const { default: axios } = require("axios");
 const app = express();
 
-// connexion to BD
+// Connexion to BD
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -13,25 +12,27 @@ const db = mysql.createConnection({
   database: "cookhub",
 });
 
-// params for the server
+// Params for the server
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Le serveur tourne sur ${PORT}`);
 });
 
-//to allow a request from frontend to backend, access to datas
+// Allow a request from frontend to backend, access to datas
 app.use(cors());
 
-//to say that datas are transmitted in json format
+// Datas are transmitted in json format
 app.use(express.json());
+
+//req = request to grab something from the frontend
+//res =  response ton send something to the frontend
 
 // #############################################################################################################
 //                                              CREATE
 // #############################################################################################################
 
-// ================= CREATE RECIPE ======================
-//req = request to grab something from the frontend
-//res =  response ton send something to the frontend
+// --------------- CREATE RECIPE ---------------
+// Create recipe with only the main details
 app.post("/create", async (req, res) => {
   const recipe = req.body.params;
   const name = recipe.name;
@@ -68,8 +69,8 @@ app.post("/create", async (req, res) => {
   };
 });
 
-//================= CREATE INGREDIENT ======================
-//Create ingredient and its link to a step
+// --------------- CREATE INGREDIENT ---------------
+// Create ingredient and its link to a step
 app.post("/ingredient", (req, res) => {
   const { idStep, ingrName, quantity, unit } = req.body.params;
   db.query(
@@ -85,13 +86,14 @@ app.post("/ingredient", (req, res) => {
       "INSERT INTO stepneed (idStep, idIngredient, quantity, unit) VALUES (?,?,?,?)",
       [idStep, idIngr, quantity, unit],
       (err, result) => {
-        err ? console.log(err) : res.sendStatus(201);
+        err ? console.log("coucou") : res.sendStatus(201);
       }
     );
   };
 });
 
-//================= CREATE STEP ======================
+// -------------- CREATE STEP ---------------
+// Create a step and its link to a recipe
 app.post("/step", (req, res) => {
   db.query("INSERT INTO step (description) VALUE (null)", (err, result) => {
     err ? console.log(err) : res.send({ idStep: result.insertId });
@@ -102,13 +104,13 @@ app.post("/step", (req, res) => {
 //                                              READ
 // #############################################################################################################
 
-// ================= READ RECIPE ======================
+// --------------- READ RECIPE ---------------
 //Get recipe details and ingredients with its id and version
 app.get("/details", (req, res) => {
   const recipeId = req.query.idRecipe;
   const version = req.query.version;
   db.query(
-    "SELECT r.name as nameR, r.nbPortion, r.preparationTime, r.bakingTime, r.breakTime, i.name as nameI, quantity, unit FROM ingredient AS i INNER JOIN stepneed AS sn ON i.idIngredient=sn.idIngredient INNER JOIN preparation AS p ON p.idStep=sn.idStep INNER JOIN recipe as r ON r.idRecipe=p.idRecipe AND r.version=p.idVersion AND r.idRecipe= ? AND r.version= ?",
+    "SELECT r.name as nameR, r.nbPortion, r.preparationTime, r.bakingTime, r.breakTime, i.name as nameI, quantity, unit FROM ingredient AS i INNER JOIN stepneed AS sn ON i.idIngredient=sn.idIngredient INNER JOIN preparation AS p ON p.idStep=sn.idStep RIGHT JOIN recipe as r ON r.idRecipe=p.idRecipe AND r.version=p.idVersion WHERE r.idRecipe= ? AND r.version= ?",
     [recipeId, version],
     (err, result) => {
       if (err) console.log(err);
@@ -160,21 +162,19 @@ app.get("/recipes", (req, res) => {
 app.get("/steps", (req, res) => {
   const idRecipe = req.query.idRecipe;
   db.query(
-    "SELECT p.stepIndex, s.description FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep AND idRecipe=? AND idVersion=1",
+    "SELECT p.stepIndex, s.description, s.idStep FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep AND idRecipe=? AND idVersion=1",
     [idRecipe],
     (err, result) => {
-      console.log(result);
       err ? console.log(err) : res.send(result);
     }
   );
 });
 
 //Get the ingredients of a step
-//TODO : finish the request
 app.get("/ingredients", (req, res) => {
   const idStep = req.query.idStep;
   db.query(
-    "SELECT i.name, sn.quantity, sn.unit FROM ingredient AS i INNER JOIN stepneed AS sn ON sn.idIngredient=i.idIngredient WHERE sn.idStep=?",
+    "SELECT i.idIngredient, i.name, sn.quantity, sn.unit FROM ingredient AS i INNER JOIN stepneed AS sn ON sn.idIngredient=i.idIngredient WHERE sn.idStep=?",
     [idStep],
     (err, result) => {
       err ? console.log(err) : res.send(result);
@@ -182,7 +182,7 @@ app.get("/ingredients", (req, res) => {
   );
 });
 
-// ================= READ VERSION ======================
+// --------------- READ VERSION ---------------
 //Get all the versions of a recipe exept teh version taht we are watching
 app.get("/versions", (req, res) => {
   const idRecipe = req.query.idRecipe;
@@ -196,7 +196,7 @@ app.get("/versions", (req, res) => {
   );
 });
 
-// ================= READ CATEGORY ======================
+// --------------- READ CATEGORY ---------------
 //Get all the categories
 app.get("/categories", (req, res) => {
   db.query("SELECT * FROM category", (err, result) => {
@@ -208,10 +208,9 @@ app.get("/categories", (req, res) => {
 //                                              UPDATE
 // #############################################################################################################
 
-// ================= UPDATE STEP ======================
+// --------------- UPDATE STEP ---------------
 app.put("/step", (req, res) => {
   const { description, idStep, idRecipe } = req.body.params;
-  console.log(description);
   db.query(
     "UPDATE step SET description= ? WHERE idStep = ?",
     [description, idStep],
@@ -235,28 +234,40 @@ app.put("/step", (req, res) => {
 //                                              DELETE
 // #############################################################################################################
 
-// ================= DELETE STEP ======================
+// --------------- DELETE STEP ---------------
+// Delete a step with its id. In the BD, the delete is on cascade and that will also delete its link to the recipe
 app.delete("/step", (req, res) => {
-  const { idStep, idRecipe, idVersion } = req.body.params;
+  const { idStep } = req.query;
+
+  db.query("DELETE FROM step WHERE idStep = ?", [idStep], (err, result) => {
+    console.log(result);
+    err ? console.log(err) : "";
+  });
+});
+
+// --------------- DELETE INGREDIENT ---------------
+// Delete an ingredient with its id. In the BD, the delete is on cascade and that will also delete its link to the step
+app.delete("/ingredient", (req, res) => {
+  const { idIngredient } = req.query;
 
   db.query(
-    "DELETE FROM preparation WHERE idStep = ? AND idRecipe = ? AND idVersion = ?",
-    [idStep, idRecipe, idVersion],
+    "DELETE FROM ingredient WHERE idIngredient = ?",
+    [idIngredient],
     (err, result) => {
       err ? console.log(err) : "";
     }
   );
 });
 
-// ================= DELETE INGREDIENT ======================
-app.delete("/ingredient", (req, res) => {
-  const { idIngredient } = req.body.params;
+// --------------- DELETE RECIPE ---------------
+//Delete only the main informations of a recipe
+app.delete("/recipe", (req, res) => {
+  const { idRecipe } = req.query;
 
   db.query(
-    "DELETE FROM ingredient WHERE idIngredient = ?",
-    [idIngredient],
+    "DELETE FROM recipe WHERE idRecipe = ? AND version=1",
+    [idRecipe],
     (err, result) => {
-      console.log(result);
       err ? console.log(err) : "";
     }
   );

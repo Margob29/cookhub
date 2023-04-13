@@ -6,12 +6,16 @@ import Axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import IngredientStep from "../../components/IngredientStep";
 
+//TODO : regarder le margin pour le responsive
+
+// Page to create a new step to a recipe. Displaying of the ingredient allready linked to this step
 export default function StepCreation() {
   const [description, setDescription] = useState("");
   const [ingredientsList, setIngredientsList] = useState("");
   let { idRecipe, idStep } = useParams();
   const navigate = useNavigate();
 
+  // Function to get existing ingredients from the DB
   const getIngredients = () => {
     Axios.get("http://localhost:3001/ingredients", {
       params: { idStep: idStep },
@@ -24,30 +28,39 @@ export default function StepCreation() {
       });
   };
 
+  // Function to update the step with the description entered
   const UpdateStep = () => {
-    Axios.put("http://localhost:3001/step", {
-      params: { description, idStep, idRecipe },
-    })
-      .then(() => {
-        navigate(`/creationprogress/${idRecipe}`);
+    if (!description) {
+      //TODO
+    } else {
+      Axios.put("http://localhost:3001/step", {
+        params: { description, idStep, idRecipe },
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then(() => {
+          navigate(`/creationprogress/${idRecipe}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
+  // Function to add a new ingredient linked to the step
   const toAddIngredient = () => {
     navigate(`/addingredient/${idRecipe}/${idStep}`);
   };
 
+  // Activate necessary functions when the page is charged
   useEffect(() => {
     getIngredients();
   }, []);
 
+  // Navigate to the page with all the steps
+  const ToCreationProgress = () => {
+    navigate(`/creationprogress/${idRecipe}`);
+  };
+
   return (
-    //TODO : agrandir la zone de description pour que ça s'écrive en long et pas en ligne
-    //TODO : faire la confirmation d'annulation
-    //TODO : regarder le margin pour le responsive
     <div className="container d-flex justify-content-center p-0">
       <div className="col-lg-8">
         <form>
@@ -59,7 +72,7 @@ export default function StepCreation() {
                 width={40}
                 className="logo"
               />
-              Comment réaliser cette étape ?
+              Explique nous tes secrets de chef
               <Icon
                 icon="icon-park-outline:cook"
                 color={"#5837B3"}
@@ -71,6 +84,7 @@ export default function StepCreation() {
               <h4 className="labelname mb-4">Ingrédients nécessaires :</h4>
               <div className="row text-center">
                 <div className="col-xl-9 col-sm-12">
+                  {/* List of ingredients if there are for this step */}
                   {ingredientsList.length > 0 ? (
                     ingredientsList.map((ingredient, index) => {
                       return (
@@ -90,6 +104,7 @@ export default function StepCreation() {
                       <h5 className="card-title labelname">
                         Ajouter un ingrédient
                       </h5>
+                      {/* Button to add an ingredient */}
                       <a
                         className="d-flex justify-content-center"
                         type="submit"
@@ -105,7 +120,8 @@ export default function StepCreation() {
                   </div>
                 </div>
               </div>
-              <label className="labelname">Description :</label>
+              {/* TODO : essayer de conserver ce qui a été rempli si jamais la personne ajoute un ingrédient entre temps */}
+              <label className="labelname">Description* :</label>
               <textarea
                 className="labelname"
                 onChange={(e) => {
@@ -113,10 +129,16 @@ export default function StepCreation() {
                 }}
               />
             </div>
+            <p className="textStyle required">* : champ obligatoire</p>
             <div className="buttons">
-              <a className="btnDiscard" href="/creationprogress">
+              <a
+                className="btnDiscard"
+                type="submit"
+                onClick={ToCreationProgress}
+              >
                 Annuler
               </a>
+              {/* Button to add a description to the step */}
               <a className="btnSubmit" type="submit" onClick={UpdateStep}>
                 Valider l'étape
               </a>

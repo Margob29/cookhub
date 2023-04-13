@@ -5,9 +5,11 @@ import CarouselPresentation from "../../components/CarouselPresentation";
 import RecipeCardList from "../../components/RecipeCardList";
 import { useEffect, useState } from "react";
 
+// First page when someone arrive on the web site
 export default function Home() {
   const [recipesList, setRecipesList] = useState([]);
-  //request to BD to get the list of all the recipes
+
+  // Request to BD to get the list of all the recipes
   const getRecipes = () => {
     Axios.get("http://localhost:3001/recipes")
       .then((response) => {
@@ -18,7 +20,7 @@ export default function Home() {
       });
   };
 
-  //getRecipes have to be done when the page is charging
+  // getRecipes have to be done when the page is charging
   useEffect(() => {
     //TODO: trouver comment empêcher de déclencher 2 fois
     getRecipes();
@@ -29,7 +31,7 @@ export default function Home() {
       <CarouselPresentation />
       <div className="mt-3">
         <div className="row ms-3 me-3">
-          {/*use the request response to display the cards with the recipes*/}
+          {/* Use the request response to display the cards with the recipes */}
           <RecipeCardList recipesList={recipesList} />
         </div>
       </div>

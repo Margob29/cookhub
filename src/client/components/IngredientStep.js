@@ -2,15 +2,20 @@ import "../../App.css";
 import { Icon } from "@iconify/react";
 import Axios from "axios";
 
+//TODO : dire à la page que l'ingredient a été supprimé
+
+// Ingredients display when a step is creating. Possibility to modify or delete
 export default function IngredientStep(props) {
-  const DeleteIngredient = (idIngredient) => {
+  // Function to delete the ingredient
+  const DeleteIngredient = () => {
     Axios.delete("http://localhost:3001/ingredient", {
-      params: { idIngredient },
+      params: { idIngredient: props.ingredient.idIngredient },
     }).catch((error) => {
       console.log(error);
     });
   };
 
+  // Props get an ingredient from the BD which is display
   return (
     <div className="rectIngredient mb-2">
       <div className="row">
@@ -21,17 +26,13 @@ export default function IngredientStep(props) {
         <a href="#" className="btnModify col-3 m-0">
           Modifier
         </a>
+        {/* Delete the ingredient when the cross is clicked */}
         <a
           className="col-2 d-flex align-items-center justify-content-center"
           onClick={DeleteIngredient}
           type="submit"
         >
-          <Icon
-            icon="charm:cross"
-            width={20}
-            color={"#5837B3"}
-            onClick={DeleteIngredient(props.ingredient.idIngredient)}
-          />
+          <Icon icon="charm:cross" width={20} color={"#5837B3"} />
         </a>
       </div>
     </div>
