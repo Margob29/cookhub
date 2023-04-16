@@ -1,98 +1,287 @@
+// Librairies for BD
 const express = require("express");
 const cors = require("cors");
-
+const mysql = require("mysql");
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:3000",
-};
+// Connexion to BD
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "cookhub",
+});
 
-app.use(cors(corsOptions));
+// Params for the server
+const PORT = 3001;
+app.listen(PORT, () => {
+  console.log(`Le serveur tourne sur ${PORT}`);
+});
+
+// Allow a request from frontend to backend, access to datas
+app.use(cors());
+
+// Datas are transmitted in json format
 app.use(express.json());
 
-// ================= CREATE RECIPE ======================
-app.get("/details/:id/:v", (req, res) => {
-  const recipeId = req.params.id;
-  const query = "SELECT * FROM recipe WHERE IdRecipe = ? AND Version = ?";
+//req = request to grab something from the frontend
+//res =  response ton send something to the frontend
 
-  db.query(q, (err, result) => {
-    if (err) {
-      console.log(err);
+// #############################################################################################################
+//                                              CREATE
+// #############################################################################################################
+
+// --------------- CREATE RECIPE ---------------
+// Create recipe with only the main details
+app.post("/create", async (req, res) => {
+  const recipe = req.body.params;
+  const name = recipe.name;
+  const nbPortion = recipe.nbPortion;
+  const preparationTime = recipe.preparationTime;
+  const bakingTime = recipe.bakingTime;
+  const breakTime = recipe.breakTime;
+  const version = 1;
+  let id;
+
+  //select the last id to increase by hand the idRecipe in the DB
+  db.query("SELECT MAX(idRecipe) as lastId FROM recipe", (err, result) => {
+    //to be sure we get back the last id, we call the function create in the else of this request
+    err ? console.log(err) : create(result[0].lastId);
+  });
+
+  //function which create the new recipe with an id that we precise
+  const create = (id) => {
+    db.query(
+      "INSERT INTO recipe (idRecipe, version, name, nbPortion, preparationTime, bakingTime, breakTime) VALUES (?,?,?,?,?,?,?)",
+      [
+        id + 1,
+        version,
+        name,
+        nbPortion,
+        preparationTime,
+        bakingTime,
+        breakTime,
+      ],
+      (err, result) => {
+        err ? console.log(err) : res.send({ id: id + 1 });
+      }
+    );
+  };
+});
+
+// --------------- CREATE INGREDIENT ---------------
+// Create ingredient and its link to a step
+app.post("/ingredient", (req, res) => {
+  const { idStep, ingrName, quantity, unit } = req.body.params;
+  db.query(
+    "INSERT INTO ingredient (name) VALUES (?)",
+    [ingrName],
+    (err, result) => {
+      err ? console.log(err) : linkStepIngr(result.insertId);
     }
-    res.send(result);
+  );
+
+  const linkStepIngr = (idIngr) => {
+    db.query(
+      "INSERT INTO stepneed (idStep, idIngredient, quantity, unit) VALUES (?,?,?,?)",
+      [idStep, idIngr, quantity, unit],
+      (err, result) => {
+        err ? console.log(err) : res.sendStatus(201);
+      }
+    );
+  };
+});
+
+// -------------- CREATE STEP ---------------
+// Create a step and its link to a recipe
+app.post("/step", (req, res) => {
+  db.query("INSERT INTO step (description) VALUE (null)", (err, result) => {
+    err ? console.log(err) : res.send({ idStep: result.insertId });
   });
 });
-// ================= READ RECIPE ======================
-// ================= UPDATE RECIPE ======================
-// ================= DELETE RECIPE ======================
 
-// // Route to get all posts
-// app.get("/api/get", (req, res) => {
-//   db.query("SELECT * FROM recipe", (err, result) => {
-//     if (err) {
-//       console.log(err);
-//     }
-//     res.send(result);
-//   });
-// });
+// -------------- CREATE LINK TO CATEGORY --------------
+// Link the categories selected to the recipe
+app.post("/categories", (req, res) => {
+  const { idRecipe, idCategory } = req.body.params;
+  db.query(
+    "INSERT INTO categorization (idRecipe, idVersion, idCategory) VALUES (?,1,?)",
+    [idRecipe, idCategory],
+    (err, result) => {
+      err ? console.log(err) : res.sendStatus(201);
+    }
+  );
+});
 
-// // Route to get one post
-// app.get("/api/getFromId/:id", (req, res) => {
-//   const id = req.params.id;
-//   db.query("SELECT * FROM posts WHERE id = ?", id, (err, result) => {
-//     if (err) {
-//       console.log(err);
-//     }
-//     res.send(result);
-//   });
-// });
+// #############################################################################################################
+//                                              READ
+// #############################################################################################################
 
-// // Route for creating the post
-// app.post("/api/create", (req, res) => {
-//   const username = req.body.userName;
-//   const title = req.body.title;
-//   const text = req.body.text;
+// --------------- READ RECIPE ---------------
+//Get recipe details and ingredients with its id and version
+app.get("/details", (req, res) => {
+  const recipeId = req.query.idRecipe;
+  const version = req.query.version;
+  db.query(
+    "SELECT r.name as nameR, r.nbPortion, r.preparationTime, r.bakingTime, r.breakTime, i.name as nameI, quantity, unit FROM ingredient AS i INNER JOIN stepneed AS sn ON i.idIngredient=sn.idIngredient INNER JOIN preparation AS p ON p.idStep=sn.idStep RIGHT JOIN recipe as r ON r.idRecipe=p.idRecipe AND r.version=p.idVersion WHERE r.idRecipe= ? AND r.version= ?",
+    [recipeId, version],
+    (err, result) => {
+      if (err) console.log(err);
+      else {
+        //array with all the ingredients (objects with the name, quantity and unit) of the recipe
+        const ingr = result.map((recipe) => {
+          return {
+            nameI: recipe.nameI,
+            quantity: recipe.quantity,
+            unit: recipe.unit,
+          };
+        });
+        //object that contain name, nbPortion etc of the recipe
+        console.log(result);
+        const recipe = {
+          name: result[0].nameR,
+          nbPortion: result[0].nbPortion,
+          preparationTime: result[0].preparationTime,
+          bakingTime: result[0].bakingTime,
+          breakTime: result[0].breakTime,
+        };
+        res.send({ recipe, ingr });
+      }
+    }
+  );
+});
 
-//   db.query(
-//     "INSERT INTO posts (title, post_text, user_name) VALUES (?,?,?)",
-//     [title, text, username],
-//     (err, result) => {
-//       if (err) {
-//         console.log(err);
-//       }
-//       console.log(result);
-//     }
-//   );
-// });
+//Get the name of the recipe
+app.get("/recipeName", (req, res) => {
+  const idRecipe = req.query.idRecipe;
+  db.query(
+    "SELECT name FROM recipe WHERE idRecipe = ?",
+    [idRecipe],
+    (err, result) => {
+      err ? console.log(err) : res.send(result);
+    }
+  );
+});
 
-// // Route to like a post
-// app.post("/api/like/:id", (req, res) => {
-//   const id = req.params.id;
-//   db.query(
-//     "UPDATE posts SET likes = likes + 1 WHERE id = ?",
-//     id,
-//     (err, result) => {
-//       if (err) {
-//         console.log(err);
-//       }
-//       console.log(result);
-//     }
-//   );
-// });
+//Get all recipes but not the different versions
+app.get("/recipes", (req, res) => {
+  db.query("SELECT * FROM recipe GROUP BY idRecipe", (err, result) => {
+    if (err) console.log(err);
+    else res.send(result);
+  });
+});
 
-// // Route to delete a post
+//Get all the steps from a recipe
+app.get("/steps", (req, res) => {
+  const idRecipe = req.query.idRecipe;
+  db.query(
+    "SELECT p.stepIndex, s.description, s.idStep FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep AND idRecipe=? AND idVersion=1",
+    [idRecipe],
+    (err, result) => {
+      err ? console.log(err) : res.send(result);
+    }
+  );
+});
 
-// app.delete("/api/delete/:id", (req, res) => {
-//   const id = req.params.id;
+//Get the ingredients of a step
+app.get("/ingredients", (req, res) => {
+  const idStep = req.query.idStep;
+  db.query(
+    "SELECT i.idIngredient, i.name, sn.quantity, sn.unit FROM ingredient AS i INNER JOIN stepneed AS sn ON sn.idIngredient=i.idIngredient WHERE sn.idStep=?",
+    [idStep],
+    (err, result) => {
+      err ? console.log(err) : res.send(result);
+    }
+  );
+});
 
-//   db.query("DELETE FROM posts WHERE id= ?", id, (err, result) => {
-//     if (err) {
-//       console.log(err);
-//     }
-//   });
-// });
+// --------------- READ VERSION ---------------
+//Get all the versions of a recipe exept teh version taht we are watching
+app.get("/versions", (req, res) => {
+  const idRecipe = req.query.idRecipe;
+  const idVersion = req.query.version;
+  db.query(
+    "SELECT version FROM recipe WHERE idRecipe = ? AND version != ?",
+    [idRecipe, idVersion],
+    (err, result) => {
+      err ? console.log(err) : res.send(result);
+    }
+  );
+});
 
-const PORT = 3306;
-app.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}`);
+// --------------- READ CATEGORY ---------------
+//Get all the categories
+app.get("/categories", (req, res) => {
+  db.query("SELECT * FROM category", (err, result) => {
+    err ? console.log(err) : res.send(result);
+  });
+});
+
+// #############################################################################################################
+//                                              UPDATE
+// #############################################################################################################
+
+// --------------- UPDATE STEP ---------------
+app.put("/step", (req, res) => {
+  const { description, idStep, idRecipe } = req.body.params;
+  db.query(
+    "UPDATE step SET description= ? WHERE idStep = ?",
+    [description, idStep],
+    (err, result) => {
+      err ? console.log(err) : preparation(idRecipe, idStep);
+    }
+  );
+
+  const preparation = (idRecipe, idStep) => {
+    db.query(
+      "INSERT INTO preparation (idRecipe, idVersion, idStep, stepIndex) SELECT ?, 1, ?, IF(MAX(stepIndex) IS NULL, 1, MAX(stepIndex)+1) FROM preparation WHERE idRecipe=? AND idVersion =1; ",
+      [idRecipe, idStep, idRecipe],
+      (err, result) => {
+        err ? console.log(err) : res.sendStatus(201);
+      }
+    );
+  };
+});
+
+// #############################################################################################################
+//                                              DELETE
+// #############################################################################################################
+
+// --------------- DELETE STEP ---------------
+// Delete a step with its id. In the BD, the delete is on cascade and that will also delete its link to the recipe
+app.delete("/step", (req, res) => {
+  const { idStep } = req.query;
+
+  db.query("DELETE FROM step WHERE idStep = ?", [idStep], (err, result) => {
+    console.log(result);
+    err ? console.log(err) : res.sendStatus(200);
+  });
+});
+
+// --------------- DELETE INGREDIENT ---------------
+// Delete an ingredient with its id. In the BD, the delete is on cascade and that will also delete its link to the step
+app.delete("/ingredient", (req, res) => {
+  const { idIngredient } = req.query;
+
+  db.query(
+    "DELETE FROM ingredient WHERE idIngredient = ?",
+    [idIngredient],
+    (err, result) => {
+      err ? console.log(err) : res.sendStatus(200);
+    }
+  );
+});
+
+// --------------- DELETE RECIPE ---------------
+//Delete only the main informations of a recipe
+app.delete("/recipe", (req, res) => {
+  const { idRecipe } = req.query;
+
+  db.query(
+    "DELETE FROM recipe WHERE idRecipe = ? AND version=1",
+    [idRecipe],
+    (err, result) => {
+      err ? console.log(err) : "";
+    }
+  );
 });

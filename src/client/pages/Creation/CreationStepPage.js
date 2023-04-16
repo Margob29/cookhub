@@ -1,68 +1,106 @@
 import { Icon } from "@iconify/react";
 import "../../../App.css";
 import logo from "../../../images/logo_violet.png";
+import { useEffect, useState } from "react";
+import Axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import IngredientStep from "../../components/IngredientStep";
 
+//TODO : regarder le margin pour le responsive
+
+// Page to create a new step to a recipe. Displaying of the ingredient allready linked to this step
 export default function StepCreation() {
+  const [description, setDescription] = useState("");
+  const [ingredientsList, setIngredientsList] = useState("");
+  let { idRecipe, idStep } = useParams();
+  const navigate = useNavigate();
+
+  // Function to get existing ingredients from the DB
+  const getIngredients = () => {
+    Axios.get("http://localhost:3001/ingredients", {
+      params: { idStep: idStep },
+    })
+      .then((response) => {
+        setIngredientsList(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // Function to update the step with the description entered
+  const UpdateStep = () => {
+    if (!description) {
+      //TODO
+    } else {
+      Axios.put("http://localhost:3001/step", {
+        params: { description, idStep, idRecipe },
+      })
+        .then(() => {
+          navigate(`/creationprogress/${idRecipe}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  // Function to add a new ingredient linked to the step
+  const toAddIngredient = () => {
+    navigate(`/addingredient/${idRecipe}/${idStep}`);
+  };
+
+  // Activate necessary functions when the page is charged
+  useEffect(() => {
+    getIngredients();
+  }, []);
+
+  // Navigate to the page with all the steps
+  const ToCreationProgress = () => {
+    navigate(`/creationprogress/${idRecipe}`);
+  };
+
   return (
-    //TODO : remplacer l'icon + par une croix pour supprimer un ingrédient
-    //TODO : agrandir la zone de descritpion pour que ça s'écrive en long et pas en ligne
-    //TODO : checker le hover du bouton modifier qui veut pas se mettre comme je veux
-    //TODO : peut-être mettre autre chose à la place du logo dans le titre
-    //TODO : faire la confirmation d'annulation
-    //TODO : regarder le margin pour le responsive
     <div className="container d-flex justify-content-center p-0">
       <div className="col-lg-8">
         <form>
           <fieldset className="form p-4 m-lg-4 formcontainer">
             <legend className="formtitle mb-3">
-              <Icon icon="col-xl-8" color={"#5837B3"} width={40} />
-              <img src={logo} alt="Logo" className="logo" />
-              Comment réaliser cette étape ?
-              <img src={logo} alt="Logo" className="logo" />
+              <Icon
+                icon="icon-park-outline:cook"
+                color={"#5837B3"}
+                width={40}
+                className="logo"
+              />
+              Explique nous tes secrets de chef
+              <Icon
+                icon="icon-park-outline:cook"
+                color={"#5837B3"}
+                width={40}
+                className="logo"
+              />
             </legend>
             <div className="row mb-3 d-flex justify-content-center">
               <h4 className="labelname mb-4">Ingrédients nécessaires :</h4>
               <div className="row text-center">
                 <div className="col-xl-9 col-sm-12">
-                  <div className="row">
-                    <span className="col-3 ingredients">Farine</span>
-                    <span className="col-3 ingredients">150g</span>
-                    <a href="#" className="btnModify col-3 m-0">
-                      Modifier
-                    </a>
-                  </div>
-                  <hr />
-                  <div className="row">
-                    <span className="col-3 ingredients">Farine</span>
-                    <span className="col-3 ingredients">150g</span>
-                    <a href="#" className="btnModify col-3 m-0">
-                      Modifier
-                    </a>
-                  </div>
-                  <hr />
-                  <div className="row">
-                    <span className="col-3 ingredients">Farine</span>
-                    <span className="col-3 ingredients">150g</span>
-                    <a href="#" className="btnModify col-3 m-0">
-                      Modifier
-                    </a>
-                  </div>
-                  <hr />
-                  <div className="row">
-                    <span className="col-3 ingredients">Farine</span>
-                    <span className="col-3 ingredients">150g</span>
-                    <a href="#" className="btnModify col-3 m-0">
-                      Modifier
-                    </a>
-                    <div className="col-3 d-flex align-items-center justify-content-center">
-                      <Icon
-                        icon="material-symbols:add-circle-outline-rounded"
-                        width={20}
-                        color={"#5837B3"}
-                      />
+                  {/* List of ingredients if there are for this step */}
+                  {ingredientsList.length > 0 ? (
+                    ingredientsList.map((ingredient, index) => {
+                      return (
+                        <IngredientStep
+                          key={index}
+                          ingredient={ingredient}
+                          callBack={getIngredients}
+                        />
+                      );
+                    })
+                  ) : (
+                    <div className="textStyle">
+                      Il n'y a pas d'ingrédients pour cette étape. Hésite pas à
+                      en ajouter si tu as besoin de quelque chose !
                     </div>
-                  </div>
-                  <hr />
+                  )}
                 </div>
                 <div className="col-xl-3 col-md-6 col-sm-6 d-flex align-items-center justify-content-center">
                   <div className="card">
@@ -70,9 +108,11 @@ export default function StepCreation() {
                       <h5 className="card-title labelname">
                         Ajouter un ingrédient
                       </h5>
+                      {/* Button to add an ingredient */}
                       <a
-                        href="/addingredient"
                         className="d-flex justify-content-center"
+                        type="submit"
+                        onClick={toAddIngredient}
                       >
                         <Icon
                           icon="material-symbols:add-circle-outline-rounded"
@@ -84,14 +124,26 @@ export default function StepCreation() {
                   </div>
                 </div>
               </div>
-              <label className="labelname">Description :</label>
-              <input type="textarea" className="labelname" />
+              {/* TODO : essayer de conserver ce qui a été rempli si jamais la personne ajoute un ingrédient entre temps */}
+              <label className="labelname">Description* :</label>
+              <textarea
+                className="labelname"
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
+              />
             </div>
+            <p className="textStyle required">* : champ obligatoire</p>
             <div className="buttons">
-              <a className="btnDiscard" href="/creationprogress">
+              <a
+                className="btnDiscard"
+                type="submit"
+                onClick={ToCreationProgress}
+              >
                 Annuler
               </a>
-              <a className="btnSubmit" type="submit" href="/creationprogress">
+              {/* Button to add a description to the step */}
+              <a className="btnSubmit" type="submit" onClick={UpdateStep}>
                 Valider l'étape
               </a>
             </div>

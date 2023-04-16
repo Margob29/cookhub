@@ -13,21 +13,32 @@ import StepCreation from "./client/pages/Creation/CreationStepPage";
 import AddIngredient from "./client/pages/Creation/AddIngredientPage";
 import RecipePage from "./client/pages/Home/RecipePage";
 import Error from "./client/pages/Error";
+import Confirmation from "./client/pages/Creation/Confirmation";
 
+// Router to the differents links into the web site
 function App() {
   return (
     <div>
-      {/* <CHNavbar></CHNavbar>
-      <RecipePage></RecipePage> */}
       <BrowserRouter>
         <CHNavbar />{" "}
         <Routes>
           <Route exact path="/" element={<Home />} />
-          <Route path="/details/2" element={<RecipePage />} />
+          <Route path="/details/:id/:version" element={<RecipePage />} />
+          <Route path="/confirmation/:id/:version" element={<Confirmation />} />
           <Route path="/creation" element={<CreationForm />} />
-          <Route path="/creationprogress" element={<CreationProgress />} />
-          <Route path="/creationstep" element={<StepCreation />} />
-          <Route path="/addingredient" element={<AddIngredient />} />
+          <Route
+            path="/creationprogress/:idRecipe"
+            element={<CreationProgress />}
+          />
+          <Route
+            path="/creationstep/:idRecipe/:idStep"
+            element={<StepCreation />}
+          />
+          <Route
+            path="/addingredient/:idRecipe/:idStep"
+            element={<AddIngredient />}
+          />
+          {/* If any path above correspond, link to the page Error */}
           <Route path="*" element={<Error />} />
         </Routes>
       </BrowserRouter>

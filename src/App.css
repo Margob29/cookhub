@@ -14,6 +14,7 @@
 }
 
 /* ==================== HomePage ==================== */
+/* Different display depends on the screen size */
 @media only screen and (max-width: 400px) {
   .presentation{
     background-color: hsla(0, 0%, 0%, 0.54);
@@ -35,6 +36,7 @@
 }
 }
 
+/*  */
 .head{
   display: flex;
   justify-content: center;
@@ -51,6 +53,7 @@
   margin: 5px;
 }
 
+/* Title of the card on the picture */
 .carousel-caption{
   bottom: 0!important;
   top: 30%!important;
@@ -191,6 +194,7 @@
   text-align: left;
 }
 
+/* Style for recipe cards */
 .rCard{
   margin: 15px;
   background-color: #DCF3FF!important;
@@ -210,13 +214,21 @@
   align-items: center;
 }
 
-/* ==================== Details ====================*/
+/* ==================== Ingredient ====================*/
 
+/* ingredients details */
 .ingredients{
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Berlin Sans FB', 'Fredoka';
+}
+
+/* Shape around ingredients */
+.rectIngredient{
+  border-radius: 50px;
+  border: solid 2px #A20041;
+  padding: 5px;
 }
 
 /* ==================== Others ====================*/
@@ -229,7 +241,34 @@
   margin: 5px;
 }
 
+/* Text style for all the web site */
 .textStyle{
   font-family: 'Berlin Sans FB', 'Fredoka';
 }
 
+
+.warning{
+  font-family: 'Berlin Sans FB Demi', 'Fredoka'; 
+}
+
+/* Style for the required information */
+.required{
+  font-style: italic;
+  font-size: 0.80rem;
+}
+
+
+
+/* body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+} */
