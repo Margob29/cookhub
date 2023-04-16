@@ -49,7 +49,7 @@ export default function RecipeDetails(props) {
 
   // Function to navigate between pages
   const BackToCreation = () => {
-    navigate(`/creationprogress/${props.idRecipe}`);
+    navigate(`/creationprogress/${props.id}`);
   };
 
   return (

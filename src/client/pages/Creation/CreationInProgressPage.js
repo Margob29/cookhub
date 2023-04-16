@@ -17,9 +17,9 @@ export default function CreationProgress() {
   const navigate = useNavigate();
 
   // Functions to get elements from the BD
-  const getName = (id) => {
+  const getName = () => {
     Axios.get("http://localhost:3001/recipeName/", {
-      params: { idRecipe: id },
+      params: { idRecipe },
     })
       .then((response) => {
         setName(response.data[0].name);
@@ -29,9 +29,9 @@ export default function CreationProgress() {
       });
   };
 
-  const getSteps = (id) => {
+  const getSteps = () => {
     Axios.get("http://localhost:3001/steps", {
-      params: { idRecipe: id },
+      params: { idRecipe },
     })
       .then((response) => {
         setListSteps(response.data);
@@ -65,8 +65,8 @@ export default function CreationProgress() {
 
   // Activate functions when the page is charged
   useEffect(() => {
-    getName(idRecipe);
-    getSteps(idRecipe);
+    getName();
+    getSteps();
   }, []);
 
   // Navigation to the details of the recipe before validating
@@ -101,7 +101,7 @@ export default function CreationProgress() {
           {/* Display all the steps created with cards */}
           {listSteps.length > 0
             ? listSteps.map((step, index) => {
-                return <StepCard key={index} step={step} />;
+                return <StepCard key={index} step={step} callBack={getSteps} />;
               })
             : ""}
           <div className="col-xl-3 col-md-6 col-sm-6">

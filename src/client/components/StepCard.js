@@ -12,9 +12,14 @@ export default function StepCard(props) {
   const DeleteStep = () => {
     Axios.delete("http://localhost:3001/step", {
       params: { idStep: step.idStep },
-    }).catch((error) => {
-      console.log(error);
-    });
+    })
+      // Update the page with all the steps when one is deleted
+      .then((res) => {
+        if (res.status == 200) props.callBack();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

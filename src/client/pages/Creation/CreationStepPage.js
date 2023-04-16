@@ -88,7 +88,11 @@ export default function StepCreation() {
                   {ingredientsList.length > 0 ? (
                     ingredientsList.map((ingredient, index) => {
                       return (
-                        <IngredientStep key={index} ingredient={ingredient} />
+                        <IngredientStep
+                          key={index}
+                          ingredient={ingredient}
+                          callBack={getIngredients}
+                        />
                       );
                     })
                   ) : (

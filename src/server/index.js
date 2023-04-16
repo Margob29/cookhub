@@ -86,7 +86,7 @@ app.post("/ingredient", (req, res) => {
       "INSERT INTO stepneed (idStep, idIngredient, quantity, unit) VALUES (?,?,?,?)",
       [idStep, idIngr, quantity, unit],
       (err, result) => {
-        err ? console.log("coucou") : res.sendStatus(201);
+        err ? console.log(err) : res.sendStatus(201);
       }
     );
   };
@@ -98,6 +98,19 @@ app.post("/step", (req, res) => {
   db.query("INSERT INTO step (description) VALUE (null)", (err, result) => {
     err ? console.log(err) : res.send({ idStep: result.insertId });
   });
+});
+
+// -------------- CREATE LINK TO CATEGORY --------------
+// Link the categories selected to the recipe
+app.post("/categories", (req, res) => {
+  const { idRecipe, idCategory } = req.body.params;
+  db.query(
+    "INSERT INTO categorization (idRecipe, idVersion, idCategory) VALUES (?,1,?)",
+    [idRecipe, idCategory],
+    (err, result) => {
+      err ? console.log(err) : res.sendStatus(201);
+    }
+  );
 });
 
 // #############################################################################################################
@@ -241,7 +254,7 @@ app.delete("/step", (req, res) => {
 
   db.query("DELETE FROM step WHERE idStep = ?", [idStep], (err, result) => {
     console.log(result);
-    err ? console.log(err) : "";
+    err ? console.log(err) : res.sendStatus(200);
   });
 });
 
@@ -254,7 +267,7 @@ app.delete("/ingredient", (req, res) => {
     "DELETE FROM ingredient WHERE idIngredient = ?",
     [idIngredient],
     (err, result) => {
-      err ? console.log(err) : "";
+      err ? console.log(err) : res.sendStatus(200);
     }
   );
 });

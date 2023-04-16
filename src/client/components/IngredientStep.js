@@ -10,9 +10,13 @@ export default function IngredientStep(props) {
   const DeleteIngredient = () => {
     Axios.delete("http://localhost:3001/ingredient", {
       params: { idIngredient: props.ingredient.idIngredient },
-    }).catch((error) => {
-      console.log(error);
-    });
+    })
+      .then((res) => {
+        if (res.status == 200) props.callBack();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   // Props get an ingredient from the BD which is display

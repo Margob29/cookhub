@@ -12,6 +12,9 @@ export default function CreationForm() {
   const [bakingTime, setBakingTime] = useState(0);
   const [breakTime, setBreakTime] = useState(0);
   const [listCategories, setListCategories] = useState([]);
+  const [dish, setDish] = useState(); //vérifier que c'est bien un nombre qu'on récupère
+  const [diet, setDiet] = useState([]);
+
   const navigate = useNavigate();
 
   // Function to get informations from the DB
@@ -27,7 +30,7 @@ export default function CreationForm() {
 
   // Function to add a recipe with parametres from the form
   const addRecipe = () => {
-    if (!name || !nbPortions || !preparationTime) {
+    if (!name || !nbPortions || !preparationTime || !dish) {
       //TODO : empêcher la validation
     } else {
       Axios.post("http://localhost:3001/create", {
@@ -39,14 +42,30 @@ export default function CreationForm() {
           pauseTime: breakTime,
         },
       })
-        .then((res) => {
-          //redirection to the next page
+        .then(async (res) => {
+          // Add dish category
+          await AddCategories(res.data.id, dish);
+          // Add others categories if there are
+          if (diet.length > 0) {
+            console.log(diet);
+            diet.map(async (d, key) => {
+              await AddCategories(res.data.id, d);
+            });
+          }
+          // Redirection to the next page
           navigate(`/creationprogress/${res.data.id}`);
         })
         .catch((error) => {
           console.log(error);
         });
     }
+  };
+
+  // Add categories linked to the recipe
+  const AddCategories = async (idRecipe, idCategory) => {
+    return Axios.post("http://localhost:3001/categories", {
+      params: { idRecipe, idCategory: idCategory },
+    }).catch((error) => console.log(error));
   };
 
   // Activate function when the page is charged
@@ -146,9 +165,14 @@ export default function CreationForm() {
               <div className="col-4">
                 <label className="me-2 labelname">Type de plat*: </label>
               </div>
-              {/* Possibility to choose a type of dish */}
+              {/* Choose a type of dish */}
               <div className="col-7">
-                <select className="labelname" name="dish" id="dish">
+                <select
+                  className="labelname"
+                  name="dish"
+                  id="dish"
+                  onChange={(event) => setDish(event.target.value)}
+                >
                   <option value="">-- Choisir --</option>
                   {listCategories.map((categ, index) => {
                     if (categ.idCategory <= 7) {
@@ -168,8 +192,27 @@ export default function CreationForm() {
                 <label className="me-2 labelname">Régime: </label>
               </div>
               <div className="col-7">
-                <select className="labelname" name="diet" id="diet" multiple>
-                  <option value="">-- Choisir --</option>
+                <select
+                  className="labelname"
+                  name="diet"
+                  id="diet"
+                  multiple
+                  onChange={(event) => {
+                    // Creation of on array with all the selected options
+                    const tab = [];
+                    if (event.target.selectedOptions.item(0).value != 0) {
+                      for (
+                        let i = 0;
+                        i < event.target.selectedOptions.length;
+                        i++
+                      ) {
+                        tab.push(event.target.selectedOptions.item(i).value);
+                      }
+                      // Set the diet with the array
+                      setDiet(tab);
+                    }
+                  }}
+                >
                   {listCategories.map((categ, index) => {
                     if (categ.idCategory >= 7) {
                       return (
@@ -179,6 +222,7 @@ export default function CreationForm() {
                       );
                     }
                   })}
+                  <option value="0">Aucun</option>
                 </select>
               </div>
             </div>
