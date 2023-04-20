@@ -162,15 +162,17 @@ app.get("/details", (req, res) => {
       if (err) console.log(err);
       else {
         //array with all the ingredients (objects with the name, quantity and unit) of the recipe
-        const ingr = result.map((recipe) => {
-          return {
-            nameI: recipe.nameI,
-            quantity: recipe.quantity,
-            unit: recipe.unit,
-          };
-        });
+        const ingr = [];
+        if (result[0].nameI) {
+          ingr = result.map((recipe) => {
+            return {
+              nameI: recipe.nameI,
+              quantity: recipe.quantity,
+              unit: recipe.unit,
+            };
+          });
+        }
         //object that contain name, nbPortion etc of the recipe
-        console.log(result);
         const recipe = {
           name: result[0].nameR,
           nbPortion: result[0].nbPortion,
@@ -208,7 +210,7 @@ app.get("/recipes", (req, res) => {
 app.get("/steps", (req, res) => {
   const { idRecipe, version } = req.query;
   db.query(
-    "SELECT p.stepIndex, s.description, s.idStep FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep AND idRecipe=? AND idVersion=?",
+    "SELECT p.stepIndex, s.description, s.idStep FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep AND idRecipe=? AND idVersion=? ORDER BY p.stepIndex",
     [idRecipe, version],
     (err, result) => {
       err ? console.log(err) : res.send(result);
@@ -219,6 +221,7 @@ app.get("/steps", (req, res) => {
 //Get the ingredients of a step
 app.get("/ingredients", (req, res) => {
   const idStep = req.query.idStep;
+  //console.log(idStep);
   db.query(
     "SELECT i.idIngredient, i.name, sn.quantity, sn.unit FROM ingredient AS i INNER JOIN stepneed AS sn ON sn.idIngredient=i.idIngredient WHERE sn.idStep=?",
     [idStep],
@@ -276,7 +279,6 @@ app.delete("/step", (req, res) => {
   const { idStep } = req.query;
 
   db.query("DELETE FROM step WHERE idStep = ?", [idStep], (err, result) => {
-    console.log(result);
     err ? console.log(err) : res.sendStatus(200);
   });
 });

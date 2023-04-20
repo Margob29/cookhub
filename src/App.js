@@ -14,6 +14,7 @@ import AddIngredient from "./client/pages/Creation/AddIngredientPage";
 import RecipePage from "./client/pages/Home/RecipePage";
 import Error from "./client/pages/Error";
 import Confirmation from "./client/pages/Creation/Confirmation";
+import StepsPage from "./client/pages/Home/StepsPage";
 
 // Router to the differents links into the web site
 function App() {
@@ -38,6 +39,7 @@ function App() {
             path="/addingredient/:idRecipe/:idStep"
             element={<AddIngredient />}
           />
+          <Route path="/steps/:idRecipe/:version" element={<StepsPage />} />
           {/* If any path above correspond, link to the page Error */}
           <Route path="*" element={<Error />} />
         </Routes>

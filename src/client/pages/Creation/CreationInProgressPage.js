@@ -65,14 +65,17 @@ export default function CreationProgress() {
   useEffect(() => {
     getName();
     getSteps();
-    console.log(listSteps);
   }, []);
 
   // Navigation to the details of the recipe before validating
   const ToDetails = () => {
     if (listSteps.length == 0) {
       //TODO: avertir qu'il faut au moins une étape
-    } else navigate(`/confirmation/${idRecipe}/1`);
+    } else {
+      navigate(`/confirmation/${idRecipe}/1`, {
+        state: listSteps,
+      });
+    }
   };
 
   return (

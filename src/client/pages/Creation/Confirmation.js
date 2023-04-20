@@ -1,5 +1,5 @@
 import "../../../App.css";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import RecipeDetails from "../../components/RecipeDetails";
 
 //TODO : ajouter les étapes
@@ -7,12 +7,16 @@ import RecipeDetails from "../../components/RecipeDetails";
 // Page with the details of a recipe and the steps to be sure that the user didn't make a mistake before validating
 export default function RecipePage() {
   let { id, version } = useParams();
+  const location = useLocation();
 
   return (
-    <RecipeDetails
-      id={id}
-      version={version}
-      buttons={["Confirmer la création de la recette"]}
-    />
+    <div>
+      <RecipeDetails
+        id={id}
+        version={version}
+        buttons={["Confirmer la création de la recette"]}
+        stepsList={location.state}
+      />
+    </div>
   );
 }
