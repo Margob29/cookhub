@@ -162,7 +162,7 @@ app.get("/details", (req, res) => {
       if (err) console.log(err);
       else {
         //array with all the ingredients (objects with the name, quantity and unit) of the recipe
-        const ingr = [];
+        let ingr = [];
         if (result[0].nameI) {
           ingr = result.map((recipe) => {
             return {

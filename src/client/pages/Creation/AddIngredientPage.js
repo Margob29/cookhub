@@ -63,7 +63,7 @@ export default function AddIngredient() {
               />
             </legend>
             <p className="text-center labelname">
-              Dis nous comment faire pour réaliser ta recette !
+              Quel est ton ingrédient mystère ?
             </p>
             <br />
             <div className="row mb-3">

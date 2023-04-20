@@ -47,16 +47,23 @@ export default function StepCreation() {
     }
   };
 
+  // Function to delete a step
+  const DeleteStep = () => {
+    Axios.delete("http://localhost:3001/step", {
+      params: { idStep },
+    })
+      .then(() => navigate(`/creationprogress/${idRecipe}`))
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   // Activate necessary functions when the page is charged
   useEffect(() => {
     getIngredients();
   }, []);
 
   // Functions to navigate to other pages
-  const ToCreationProgress = () => {
-    navigate(`/creationprogress/${idRecipe}`);
-  };
-
   const toAddIngredient = () => {
     navigate(`/addingredient/${idRecipe}/${idStep}`);
   };
@@ -137,11 +144,7 @@ export default function StepCreation() {
             </div>
             <p className="textStyle required">* : champ obligatoire</p>
             <div className="buttons">
-              <a
-                className="btnDiscard"
-                type="submit"
-                onClick={ToCreationProgress}
-              >
+              <a className="btnDiscard" type="submit" onClick={DeleteStep}>
                 Annuler
               </a>
               {/* Button to add a description to the step */}

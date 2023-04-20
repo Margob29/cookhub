@@ -96,9 +96,7 @@ export default function CreationProgress() {
             className="logo"
           />
         </h4>
-        <p className="text-center labelname">
-          Dis nous comment faire pour réaliser ta recette !
-        </p>
+        <p className="text-center labelname">Alors, comment on fait ?</p>
         <div className="row">
           {/* Display all the steps created with cards */}
           {listSteps.length > 0
