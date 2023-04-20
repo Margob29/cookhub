@@ -214,7 +214,7 @@ export default function CreationForm() {
                   }}
                 >
                   {listCategories.map((categ, index) => {
-                    if (categ.idCategory >= 7) {
+                    if (categ.idCategory > 7) {
                       return (
                         <option value={categ.idCategory} key={index}>
                           {categ.name}

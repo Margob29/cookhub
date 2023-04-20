@@ -70,34 +70,67 @@ app.post("/create", async (req, res) => {
 });
 
 // --------------- CREATE INGREDIENT ---------------
-// Create ingredient and its link to a step
+// Create or update ingredient and its link to a step
 app.post("/ingredient", (req, res) => {
-  const { idStep, ingrName, quantity, unit } = req.body.params;
-  db.query(
-    "INSERT INTO ingredient (name) VALUES (?)",
-    [ingrName],
-    (err, result) => {
-      err ? console.log(err) : linkStepIngr(result.insertId);
-    }
-  );
+  const { idStep, ingrName, quantity, unit, idIngredient } = req.body.params;
 
-  const linkStepIngr = (idIngr) => {
+  //If there no existant ingredient, we create one
+  if (!idIngredient) {
     db.query(
-      "INSERT INTO stepneed (idStep, idIngredient, quantity, unit) VALUES (?,?,?,?)",
-      [idStep, idIngr, quantity, unit],
+      "INSERT INTO ingredient (name) VALUES (?)",
+      [ingrName],
       (err, result) => {
-        err ? console.log(err) : res.sendStatus(201);
+        err ? console.log(err) : LinkStepIngr(result.insertId);
       }
     );
-  };
+    const LinkStepIngr = (idIngr) => {
+      db.query(
+        "INSERT INTO stepneed (idStep, idIngredient, quantity, unit) VALUES (?,?,?,?)",
+        [idStep, idIngr, quantity, unit],
+        (err, result) => {
+          err ? console.log(err) : res.sendStatus(201);
+        }
+      );
+    };
+  }
+  // if there is one, we update it
+  else {
+    db.query(
+      "UPDATE ingredient SET name = ? WHERE idIngredient = ?",
+      [ingrName, idIngredient],
+      (err, result) => {
+        err ? console.log(err) : UdpateLink();
+      }
+    );
+    const UdpateLink = () => {
+      db.query(
+        "UPDATE stepneed SET quantity = ?, unit = ? WHERE idStep = ? AND idIngredient = ?",
+        [quantity, unit, idStep, idIngredient],
+        (err, result) => {
+          err ? console.log(err) : res.sendStatus(201);
+        }
+      );
+    };
+  }
 });
 
 // -------------- CREATE STEP ---------------
 // Create a step and its link to a recipe
 app.post("/step", (req, res) => {
+  const { idRecipe } = req.body.params;
   db.query("INSERT INTO step (description) VALUE (null)", (err, result) => {
-    err ? console.log(err) : res.send({ idStep: result.insertId });
+    err ? console.log(err) : preparation(result.insertId);
   });
+
+  const preparation = (idStep) => {
+    db.query(
+      "INSERT INTO preparation (idRecipe, idVersion, idStep, stepIndex) SELECT ?, 1, ?, IF(MAX(stepIndex) IS NULL, 1, MAX(stepIndex)+1) FROM preparation WHERE idRecipe=? AND idVersion =1; ",
+      [idRecipe, idStep, idRecipe],
+      (err, result) => {
+        err ? console.log(err) : res.send({ idStep });
+      }
+    );
+  };
 });
 
 // -------------- CREATE LINK TO CATEGORY --------------
@@ -173,10 +206,10 @@ app.get("/recipes", (req, res) => {
 
 //Get all the steps from a recipe
 app.get("/steps", (req, res) => {
-  const idRecipe = req.query.idRecipe;
+  const { idRecipe, version } = req.query;
   db.query(
-    "SELECT p.stepIndex, s.description, s.idStep FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep AND idRecipe=? AND idVersion=1",
-    [idRecipe],
+    "SELECT p.stepIndex, s.description, s.idStep FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep AND idRecipe=? AND idVersion=?",
+    [idRecipe, version],
     (err, result) => {
       err ? console.log(err) : res.send(result);
     }
@@ -228,19 +261,9 @@ app.put("/step", (req, res) => {
     "UPDATE step SET description= ? WHERE idStep = ?",
     [description, idStep],
     (err, result) => {
-      err ? console.log(err) : preparation(idRecipe, idStep);
+      err ? console.log(err) : res.sendStatus(201);
     }
   );
-
-  const preparation = (idRecipe, idStep) => {
-    db.query(
-      "INSERT INTO preparation (idRecipe, idVersion, idStep, stepIndex) SELECT ?, 1, ?, IF(MAX(stepIndex) IS NULL, 1, MAX(stepIndex)+1) FROM preparation WHERE idRecipe=? AND idVersion =1; ",
-      [idRecipe, idStep, idRecipe],
-      (err, result) => {
-        err ? console.log(err) : res.sendStatus(201);
-      }
-    );
-  };
 });
 
 // #############################################################################################################

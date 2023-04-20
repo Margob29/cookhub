@@ -3,14 +3,15 @@ import "../../../App.css";
 import logo from "../../../images/logo_violet.png";
 import { useEffect, useState } from "react";
 import Axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import IngredientStep from "../../components/IngredientStep";
 
 //TODO : regarder le margin pour le responsive
 
 // Page to create a new step to a recipe. Displaying of the ingredient allready linked to this step
 export default function StepCreation() {
-  const [description, setDescription] = useState("");
+  const location = useLocation();
+  const [description, setDescription] = useState(location.state?.description);
   const [ingredientsList, setIngredientsList] = useState("");
   let { idRecipe, idStep } = useParams();
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export default function StepCreation() {
       params: { idStep: idStep },
     })
       .then((response) => {
+        console.log(response.data);
         setIngredientsList(response.data);
       })
       .catch((error) => {
@@ -45,19 +47,18 @@ export default function StepCreation() {
     }
   };
 
-  // Function to add a new ingredient linked to the step
-  const toAddIngredient = () => {
-    navigate(`/addingredient/${idRecipe}/${idStep}`);
-  };
-
   // Activate necessary functions when the page is charged
   useEffect(() => {
     getIngredients();
   }, []);
 
-  // Navigate to the page with all the steps
+  // Functions to navigate to other pages
   const ToCreationProgress = () => {
     navigate(`/creationprogress/${idRecipe}`);
+  };
+
+  const toAddIngredient = () => {
+    navigate(`/addingredient/${idRecipe}/${idStep}`);
   };
 
   return (
@@ -128,6 +129,7 @@ export default function StepCreation() {
               <label className="labelname">Description* :</label>
               <textarea
                 className="labelname"
+                value={description}
                 onChange={(e) => {
                   setDescription(e.target.value);
                 }}

@@ -1,12 +1,12 @@
 import "../../App.css";
 import { Icon } from "@iconify/react";
 import Axios from "axios";
-
-//TODO : dire et recharger la page quand on supprime une étape
+import { useParams, useNavigate } from "react-router-dom";
 
 // Card to display steps during the creation
 export default function StepCard(props) {
-  const { step } = props;
+  const { step, idRecipe } = props;
+  const navigate = useNavigate();
 
   // Function to delete a step
   const DeleteStep = () => {
@@ -20,6 +20,13 @@ export default function StepCard(props) {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  // Navigate to the ingredient page with the form already fill
+  const toStep = () => {
+    navigate(`/creationstep/${idRecipe}/${step.idStep}`, {
+      state: step,
+    });
   };
 
   return (
@@ -38,7 +45,7 @@ export default function StepCard(props) {
             </a>
           </h3>
           <p className="card-text">{step.description}</p>
-          <a href="#" className="btnModify">
+          <a type="submit" className="btnModify" onClick={toStep}>
             Modifier
           </a>
         </div>

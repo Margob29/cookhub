@@ -28,10 +28,9 @@ export default function CreationProgress() {
         console.log(error);
       });
   };
-
   const getSteps = () => {
     Axios.get("http://localhost:3001/steps", {
-      params: { idRecipe },
+      params: { idRecipe, version: 1 },
     })
       .then((response) => {
         setListSteps(response.data);
@@ -43,7 +42,7 @@ export default function CreationProgress() {
 
   // Functions add and delete elements to the BD
   const AddStep = () => {
-    Axios.post("http://localhost:3001/step")
+    Axios.post("http://localhost:3001/step", { params: { idRecipe } })
       .then((res) => {
         //redirection to the next page
         navigate(`/creationstep/${idRecipe}/${res.data.idStep}`);
@@ -52,7 +51,6 @@ export default function CreationProgress() {
         console.log(error);
       });
   };
-
   const DeleteRecipe = () => {
     Axios.delete("http://localhost:3001/recipe", {
       params: { idRecipe: idRecipe },
@@ -67,6 +65,7 @@ export default function CreationProgress() {
   useEffect(() => {
     getName();
     getSteps();
+    console.log(listSteps);
   }, []);
 
   // Navigation to the details of the recipe before validating
@@ -101,7 +100,14 @@ export default function CreationProgress() {
           {/* Display all the steps created with cards */}
           {listSteps.length > 0
             ? listSteps.map((step, index) => {
-                return <StepCard key={index} step={step} callBack={getSteps} />;
+                return (
+                  <StepCard
+                    key={index}
+                    step={step}
+                    idRecipe={idRecipe}
+                    callBack={getSteps}
+                  />
+                );
               })
             : ""}
           <div className="col-xl-3 col-md-6 col-sm-6">
