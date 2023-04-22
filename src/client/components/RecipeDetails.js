@@ -63,6 +63,18 @@ export default function RecipeDetails(props) {
   const ToSteps = () => {
     navigate(`/steps/${props.id}/${props.version}`);
   };
+  const ToVersionCreation = () => {
+    navigate(`/creation`, {
+      state: {
+        name: recipe.name,
+        nbPortion: recipe.nbPortion,
+        preparationTime: recipe.preparationTime,
+        bakingTime: recipe.bakingTime,
+        breakTime: recipe.breakTime,
+        idRecipe: props.id,
+      },
+    });
+  };
 
   return (
     <div>
@@ -138,7 +150,11 @@ export default function RecipeDetails(props) {
                 </a>
               </div>
               <div className="col-6">
-                <a href="#" className="btnModify">
+                <a
+                  className="btnModify"
+                  type="submit"
+                  onClick={ToVersionCreation}
+                >
                   {props.buttons[1]}
                 </a>
               </div>

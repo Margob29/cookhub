@@ -19,7 +19,7 @@ export default function StepCreation() {
   // Function to get existing ingredients from the DB
   const getIngredients = () => {
     Axios.get("http://localhost:3001/ingredients", {
-      params: { idStep: idStep },
+      params: { idStep },
     })
       .then((response) => {
         console.log(response.data);

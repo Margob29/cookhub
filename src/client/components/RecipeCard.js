@@ -1,11 +1,36 @@
 import "../../App.css";
 import { Icon } from "@iconify/react";
 import pie from "../../images/p.jpeg";
+import Axios from "axios";
+import { useEffect, useState } from "react";
 
 // Card to dispaly a recipe on the home page
 export default function RecipeCard(props) {
-  // Get juste the recipe object from the props
+  // Get just the recipe object from the props
   const { recipe } = props;
+
+  const [listCategories, setListCategories] = useState([]);
+
+  // Function to get the categories of the recipe
+  const getCategories = () => {
+    Axios.get("http://localhost:3001/recipeCategories", {
+      params: { idRecipe: recipe.idRecipe, version: recipe.version },
+    })
+      .then((response) => {
+        setListCategories(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+  useEffect(() => {
+    console.log(listCategories);
+  }, [listCategories]);
+
   return (
     <div className="col-xl-3 col-md-6 col-sm-6 p-0">
       {/* Link to the details of the recipe  */}
@@ -31,7 +56,13 @@ export default function RecipeCard(props) {
             </div>
             <div className="row">
               <div className="col-5">
-                <div className="categoryContainer textStyle">Dessert</div>
+                {listCategories.map((category, index) => {
+                  return (
+                    <div key={index} className="categoryContainer textStyle">
+                      {category.name}
+                    </div>
+                  );
+                })}
               </div>
               {/* TODO QUAND J'AURAIS FAIT LA PARTIE USERS */}
               {/* <div className="col-7 textStyle">

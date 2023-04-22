@@ -2,20 +2,23 @@ import "../../../App.css";
 import logo from "../../../images/logo_violet.png";
 import { useState, useEffect } from "react";
 import Axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Form for creation with classic information for the recipe
 export default function CreationForm() {
-  const [name, setName] = useState();
-  const [nbPortions, setNbPortions] = useState();
-  const [preparationTime, setPreparationTime] = useState();
-  const [bakingTime, setBakingTime] = useState(0);
-  const [breakTime, setBreakTime] = useState(0);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [name, setName] = useState(location.state?.name);
+  const [nbPortions, setNbPortions] = useState(location.state?.nbPortion);
+  const [preparationTime, setPreparationTime] = useState(
+    location.state?.preparationTime
+  );
+  const [bakingTime, setBakingTime] = useState(location.state?.bakingTime);
+  const [breakTime, setBreakTime] = useState(location.state?.breakTime);
   const [listCategories, setListCategories] = useState([]);
   const [dish, setDish] = useState(); //vérifier que c'est bien un nombre qu'on récupère
   const [diet, setDiet] = useState([]);
-
-  const navigate = useNavigate();
 
   // Function to get informations from the DB
   const getAllCategories = () => {
@@ -92,6 +95,7 @@ export default function CreationForm() {
                   type="text"
                   className="labelname"
                   required
+                  value={name}
                   onChange={(event) => {
                     setName(event.target.value);
                   }}
@@ -107,6 +111,7 @@ export default function CreationForm() {
                   type="number"
                   className="labelname"
                   required
+                  value={nbPortions}
                   onChange={(event) => {
                     setNbPortions(event.target.value);
                   }}
@@ -124,6 +129,7 @@ export default function CreationForm() {
                   type="number"
                   className="labelname"
                   required
+                  value={preparationTime}
                   onChange={(event) => {
                     setPreparationTime(event.target.value);
                   }}
@@ -139,6 +145,7 @@ export default function CreationForm() {
                 <input
                   type="number"
                   className="labelname"
+                  vlaue={bakingTime}
                   onChange={(event) => {
                     setBakingTime(event.target.value);
                   }}
@@ -154,6 +161,7 @@ export default function CreationForm() {
                 <input
                   type="number"
                   className="labelname"
+                  value={breakTime}
                   onChange={(event) => {
                     setBreakTime(event.target.value);
                   }}

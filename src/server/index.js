@@ -253,6 +253,18 @@ app.get("/categories", (req, res) => {
   });
 });
 
+// Get the categories of a recipe
+app.get("/recipeCategories", (req, res) => {
+  const { idRecipe, version } = req.query;
+  db.query(
+    "SELECT c.name FROM categorization AS z INNER JOIN category AS c ON c.idCategory=z.idCategory WHERE z.idRecipe=? AND z.idVersion=?",
+    [idRecipe, version],
+    (err, result) => {
+      err ? console.log(err) : res.send(result);
+    }
+  );
+});
+
 // #############################################################################################################
 //                                              UPDATE
 // #############################################################################################################
