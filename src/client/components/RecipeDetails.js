@@ -150,17 +150,19 @@ export default function RecipeDetails(props) {
               )}
             </div>
           </div>
-          <div className="row mb-3 me-0 d-flex justify-content-center">
-            <hr />
-            <h4 className="labelname mt-2">Etapes :</h4>
-            <div className="row text-center">
-              {props.stepsList.length > 0
-                ? props.stepsList.map((step, index) => {
-                    return <StepListItem step={step} key={index} />;
-                  })
-                : ""}
+          {props.stepsList?.length > 0 ? (
+            <div className="row mb-3 me-0 d-flex justify-content-center">
+              <hr />
+              <h4 className="labelname mt-2">Etapes :</h4>
+              <div className="row text-center">
+                {props.stepsList.map((step, index) => {
+                  return <StepListItem step={step} key={index} />;
+                })}
+              </div>
             </div>
-          </div>
+          ) : (
+            ""
+          )}
           {/* Versions */}
           <div className="row mt-4">
             <hr />
