@@ -27,7 +27,6 @@ export default function RecipeDetails(props) {
         console.log(error);
       });
   };
-
   const getAllVersions = (idRecipe, version) => {
     Axios.get("http://localhost:3001/versions/", {
       params: { idRecipe: idRecipe, version: version },
@@ -35,6 +34,17 @@ export default function RecipeDetails(props) {
       .then((response) => {
         setListVersion(response.data);
       })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // Function to delete the recipe
+  const DeleteRecipe = () => {
+    Axios.delete("http://localhost:3001/recipe", {
+      params: { idRecipe: props.id, version: props.version },
+    })
+      .then(navigate("/"))
       .catch((error) => {
         console.log(error);
       });
@@ -50,7 +60,6 @@ export default function RecipeDetails(props) {
   const BackToCreation = () => {
     navigate(`/creationprogress/${props.id}`);
   };
-
   const ToSteps = () => {
     navigate(`/steps/${props.id}/${props.version}`);
   };
@@ -59,7 +68,20 @@ export default function RecipeDetails(props) {
     <div>
       {/* Display recipe information */}
       <h3 className="formtitle mb-4 mt-2">
-        {recipe.name} - Version n°{props.version}
+        <div className="row">
+          <div className="col-11">
+            {recipe.name} - Version n°{props.version}
+          </div>
+          <div className="col-1">
+            <a
+              className="d-flex align-items-center justify-content-right"
+              type="submit"
+              onClick={DeleteRecipe}
+            >
+              <Icon icon="charm:cross" width={40} color={"#5837B3"} />
+            </a>
+          </div>
+        </div>
       </h3>
       <div className="row">
         <div className="col-lg-5 col-sm-12">

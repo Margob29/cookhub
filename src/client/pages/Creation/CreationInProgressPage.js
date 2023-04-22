@@ -53,7 +53,7 @@ export default function CreationProgress() {
   };
   const DeleteRecipe = () => {
     Axios.delete("http://localhost:3001/recipe", {
-      params: { idRecipe: idRecipe },
+      params: { idRecipe: idRecipe, version: 1 },
     })
       .then(navigate("/"))
       .catch((error) => {

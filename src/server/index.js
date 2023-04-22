@@ -300,11 +300,11 @@ app.delete("/ingredient", (req, res) => {
 // --------------- DELETE RECIPE ---------------
 //Delete only the main informations of a recipe
 app.delete("/recipe", (req, res) => {
-  const { idRecipe } = req.query;
+  const { idRecipe, version } = req.query;
 
   db.query(
-    "DELETE FROM recipe WHERE idRecipe = ? AND version=1",
-    [idRecipe],
+    "DELETE FROM recipe WHERE idRecipe = ? AND version=?",
+    [idRecipe, version],
     (err, result) => {
       err ? console.log(err) : "";
     }
