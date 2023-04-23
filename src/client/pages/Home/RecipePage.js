@@ -13,7 +13,7 @@ export default function RecipePage() {
         id={id}
         version={version}
         // Buttons that we want to display on the component
-        buttons={["Commencer à cuisiner", "Modifier la recette"]}
+        buttons={["Commencer à cuisiner", "Créer une version"]}
       />
     </div>
   );

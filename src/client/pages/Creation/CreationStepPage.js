@@ -3,14 +3,15 @@ import "../../../App.css";
 import logo from "../../../images/logo_violet.png";
 import { useEffect, useState } from "react";
 import Axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import IngredientStep from "../../components/IngredientStep";
 
 //TODO : regarder le margin pour le responsive
 
 // Page to create a new step to a recipe. Displaying of the ingredient allready linked to this step
 export default function StepCreation() {
-  const [description, setDescription] = useState("");
+  const location = useLocation();
+  const [description, setDescription] = useState(location.state?.description);
   const [ingredientsList, setIngredientsList] = useState("");
   let { idRecipe, idStep } = useParams();
   const navigate = useNavigate();
@@ -18,9 +19,10 @@ export default function StepCreation() {
   // Function to get existing ingredients from the DB
   const getIngredients = () => {
     Axios.get("http://localhost:3001/ingredients", {
-      params: { idStep: idStep },
+      params: { idStep },
     })
       .then((response) => {
+        console.log(response.data);
         setIngredientsList(response.data);
       })
       .catch((error) => {
@@ -45,9 +47,15 @@ export default function StepCreation() {
     }
   };
 
-  // Function to add a new ingredient linked to the step
-  const toAddIngredient = () => {
-    navigate(`/addingredient/${idRecipe}/${idStep}`);
+  // Function to delete a step
+  const DeleteStep = () => {
+    Axios.delete("http://localhost:3001/step", {
+      params: { idStep },
+    })
+      .then(() => navigate(`/creationprogress/${idRecipe}`))
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   // Activate necessary functions when the page is charged
@@ -55,9 +63,9 @@ export default function StepCreation() {
     getIngredients();
   }, []);
 
-  // Navigate to the page with all the steps
-  const ToCreationProgress = () => {
-    navigate(`/creationprogress/${idRecipe}`);
+  // Functions to navigate to other pages
+  const toAddIngredient = () => {
+    navigate(`/addingredient/${idRecipe}/${idStep}`);
   };
 
   return (
@@ -128,6 +136,7 @@ export default function StepCreation() {
               <label className="labelname">Description* :</label>
               <textarea
                 className="labelname"
+                value={description}
                 onChange={(e) => {
                   setDescription(e.target.value);
                 }}
@@ -135,12 +144,8 @@ export default function StepCreation() {
             </div>
             <p className="textStyle required">* : champ obligatoire</p>
             <div className="buttons">
-              <a
-                className="btnDiscard"
-                type="submit"
-                onClick={ToCreationProgress}
-              >
-                Annuler
+              <a className="btnDiscard" type="submit" onClick={DeleteStep}>
+                Supprimer
               </a>
               {/* Button to add a description to the step */}
               <a className="btnSubmit" type="submit" onClick={UpdateStep}>

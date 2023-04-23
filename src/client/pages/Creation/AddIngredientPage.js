@@ -1,18 +1,19 @@
 import "../../../App.css";
 import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Axios from "axios";
 
 // Page to create an ingredient
 export default function AddIngredient() {
-  const [name, setName] = useState();
-  const [quantity, setQuantity] = useState();
-  const [unit, setUnit] = useState();
+  const location = useLocation();
+  const [name, setName] = useState(location.state?.name);
+  const [quantity, setQuantity] = useState(location.state?.quantity);
+  const [unit, setUnit] = useState(location.state?.unit);
   const navigate = useNavigate();
   let { idRecipe, idStep } = useParams();
 
-  // Fucntion to add ingredient to the BD
+  // Function to add ingredient to the BD
   const AddIngredient = () => {
     if (!name || !quantity || !unit) {
       //TODO : empêcher la validation
@@ -23,6 +24,7 @@ export default function AddIngredient() {
           ingrName: name,
           quantity: quantity,
           unit: unit,
+          idIngredient: location.state?.idIngredient,
         },
       })
         .then(() => {
@@ -61,7 +63,7 @@ export default function AddIngredient() {
               />
             </legend>
             <p className="text-center labelname">
-              Dis nous comment faire pour réaliser ta recette !
+              Quel est ton ingrédient mystère ?
             </p>
             <br />
             <div className="row mb-3">
@@ -69,6 +71,7 @@ export default function AddIngredient() {
                 <label className="me-2 labelname">Nom* :</label>
                 <input
                   type="text"
+                  value={name}
                   onChange={(event) => {
                     setName(event.target.value);
                   }}
@@ -80,6 +83,7 @@ export default function AddIngredient() {
                 <label className="me-2 labelname">Quantité* :</label>
                 <input
                   type="number"
+                  value={quantity}
                   onChange={(event) => {
                     setQuantity(event.target.value);
                   }}
@@ -89,6 +93,7 @@ export default function AddIngredient() {
                 <label className="me-2 labelname">Unité* : </label>
                 <input
                   type="text"
+                  value={unit}
                   onChange={(event) => {
                     setUnit(event.target.value);
                   }}

@@ -28,10 +28,9 @@ export default function CreationProgress() {
         console.log(error);
       });
   };
-
   const getSteps = () => {
     Axios.get("http://localhost:3001/steps", {
-      params: { idRecipe },
+      params: { idRecipe, version: 1 },
     })
       .then((response) => {
         setListSteps(response.data);
@@ -43,7 +42,7 @@ export default function CreationProgress() {
 
   // Functions add and delete elements to the BD
   const AddStep = () => {
-    Axios.post("http://localhost:3001/step")
+    Axios.post("http://localhost:3001/step", { params: { idRecipe } })
       .then((res) => {
         //redirection to the next page
         navigate(`/creationstep/${idRecipe}/${res.data.idStep}`);
@@ -52,10 +51,9 @@ export default function CreationProgress() {
         console.log(error);
       });
   };
-
   const DeleteRecipe = () => {
     Axios.delete("http://localhost:3001/recipe", {
-      params: { idRecipe: idRecipe },
+      params: { idRecipe: idRecipe, version: 1 },
     })
       .then(navigate("/"))
       .catch((error) => {
@@ -73,7 +71,11 @@ export default function CreationProgress() {
   const ToDetails = () => {
     if (listSteps.length == 0) {
       //TODO: avertir qu'il faut au moins une étape
-    } else navigate(`/confirmation/${idRecipe}/1`);
+    } else {
+      navigate(`/confirmation/${idRecipe}/1`, {
+        state: listSteps,
+      });
+    }
   };
 
   return (
@@ -94,14 +96,19 @@ export default function CreationProgress() {
             className="logo"
           />
         </h4>
-        <p className="text-center labelname">
-          Dis nous comment faire pour réaliser ta recette !
-        </p>
+        <p className="text-center labelname">Alors, comment on fait ?</p>
         <div className="row">
           {/* Display all the steps created with cards */}
           {listSteps.length > 0
             ? listSteps.map((step, index) => {
-                return <StepCard key={index} step={step} callBack={getSteps} />;
+                return (
+                  <StepCard
+                    key={index}
+                    step={step}
+                    idRecipe={idRecipe}
+                    callBack={getSteps}
+                  />
+                );
               })
             : ""}
           <div className="col-xl-3 col-md-6 col-sm-6">

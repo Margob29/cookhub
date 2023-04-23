@@ -2,26 +2,45 @@ import "../../../App.css";
 import logo from "../../../images/logo_violet.png";
 import { useState, useEffect } from "react";
 import Axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Form for creation with classic information for the recipe
 export default function CreationForm() {
-  const [name, setName] = useState();
-  const [nbPortions, setNbPortions] = useState();
-  const [preparationTime, setPreparationTime] = useState();
-  const [bakingTime, setBakingTime] = useState(0);
-  const [breakTime, setBreakTime] = useState(0);
+  const location = useLocation();
+  const recipe = location.state?.recipe;
+  const navigate = useNavigate();
+
+  const [name, setName] = useState(recipe?.name);
+  const [nbPortions, setNbPortions] = useState(recipe?.nbPortion);
+  const [preparationTime, setPreparationTime] = useState(
+    recipe?.preparationTime
+  );
+  const [bakingTime, setBakingTime] = useState(recipe?.bakingTime || "");
+  const [breakTime, setBreakTime] = useState(recipe?.breakTime || "");
   const [listCategories, setListCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [dish, setDish] = useState(); //vérifier que c'est bien un nombre qu'on récupère
   const [diet, setDiet] = useState([]);
-
-  const navigate = useNavigate();
 
   // Function to get informations from the DB
   const getAllCategories = () => {
     Axios.get("http://localhost:3001/categories")
       .then((response) => {
         setListCategories(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getCategories = () => {
+    Axios.get("http://localhost:3001/recipeCategories", {
+      params: {
+        idRecipe: recipe.idRecipe,
+        version: recipe.version,
+      },
+    })
+      .then((response) => {
+        setCategories(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -38,8 +57,10 @@ export default function CreationForm() {
           name: name,
           nbPortion: nbPortions,
           preparationTime: preparationTime,
-          bakingTime: bakingTime,
-          pauseTime: breakTime,
+          bakingTime: bakingTime == "" ? 0 : bakingTime,
+          pauseTime: breakTime == "" ? null : breakTime,
+          idRecipe: location.state?.idRecipe || -1,
+          version: location.state?.version || 1,
         },
       })
         .then(async (res) => {
@@ -71,6 +92,7 @@ export default function CreationForm() {
   // Activate function when the page is charged
   useEffect(() => {
     getAllCategories();
+    if (location.state) getCategories();
   }, []);
 
   return (
@@ -92,6 +114,7 @@ export default function CreationForm() {
                   type="text"
                   className="labelname"
                   required
+                  value={name}
                   onChange={(event) => {
                     setName(event.target.value);
                   }}
@@ -107,6 +130,7 @@ export default function CreationForm() {
                   type="number"
                   className="labelname"
                   required
+                  value={nbPortions}
                   onChange={(event) => {
                     setNbPortions(event.target.value);
                   }}
@@ -124,6 +148,7 @@ export default function CreationForm() {
                   type="number"
                   className="labelname"
                   required
+                  value={preparationTime}
                   onChange={(event) => {
                     setPreparationTime(event.target.value);
                   }}
@@ -139,6 +164,7 @@ export default function CreationForm() {
                 <input
                   type="number"
                   className="labelname"
+                  value={bakingTime}
                   onChange={(event) => {
                     setBakingTime(event.target.value);
                   }}
@@ -154,6 +180,7 @@ export default function CreationForm() {
                 <input
                   type="number"
                   className="labelname"
+                  value={breakTime}
                   onChange={(event) => {
                     setBreakTime(event.target.value);
                   }}
@@ -214,7 +241,7 @@ export default function CreationForm() {
                   }}
                 >
                   {listCategories.map((categ, index) => {
-                    if (categ.idCategory >= 7) {
+                    if (categ.idCategory > 7) {
                       return (
                         <option value={categ.idCategory} key={index}>
                           {categ.name}

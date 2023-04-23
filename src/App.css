@@ -231,6 +231,33 @@
   padding: 5px;
 }
 
+/* ==================== Steps ====================*/
+.stepName{
+  font-family: 'Berlin Sans FB Demi', 'Fredoka';
+  color: #A20041;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.stepDescription{
+  font-family: 'Berlin Sans FB', 'Fredoka';
+  font-size: 1.5rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.arrowStep{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* padding: -10; */
+}
+
+.otherStep{
+  color: gray;
+}
+
 /* ==================== Others ====================*/
 .errorText{
   font-family: 'Berlin Sans FB Demi', 'Fredoka';
@@ -256,6 +283,7 @@
   font-style: italic;
   font-size: 0.80rem;
 }
+
 
 
 
