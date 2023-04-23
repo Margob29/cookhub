@@ -66,12 +66,9 @@ export default function RecipeDetails(props) {
   const ToVersionCreation = () => {
     navigate(`/creation`, {
       state: {
-        name: recipe.name,
-        nbPortion: recipe.nbPortion,
-        preparationTime: recipe.preparationTime,
-        bakingTime: recipe.bakingTime,
-        breakTime: recipe.breakTime,
+        recipe,
         idRecipe: props.id,
+        version: props.version,
       },
     });
   };

@@ -40,30 +40,105 @@ app.post("/create", async (req, res) => {
   const preparationTime = recipe.preparationTime;
   const bakingTime = recipe.bakingTime;
   const breakTime = recipe.breakTime;
-  const version = 1;
+  const originalVersion = req.body.params.version;
+  let version = 1;
   let id;
 
-  //select the last id to increase by hand the idRecipe in the DB
-  db.query("SELECT MAX(idRecipe) as lastId FROM recipe", (err, result) => {
-    //to be sure we get back the last id, we call the function create in the else of this request
-    err ? console.log(err) : create(result[0].lastId);
-  });
+  // If it's the first creation of this recipe we create a new one
+  if (recipe.idRecipe == -1) {
+    //select the last id to increase by hand the idRecipe in the DB
+    db.query("SELECT MAX(idRecipe) as lastId FROM recipe", (err, result) => {
+      //to be sure we get back the last id, we call the function create in the else of this request
+      err ? console.log(err) : create(result[0].lastId + 1, true);
+    });
+  }
+  // If it's just a new version, we duplicate the last one
+  else {
+    db.query(
+      "SELECT MAX(version) as lastVersion FROM recipe WHERE idRecipe=?",
+      [recipe.idRecipe],
+      (err, result) => {
+        //to be sure we get back the last version, we call the function create in the else of this request
+        if (err) console.log(err);
+        else {
+          version = result[0].lastVersion + 1;
+          id = recipe.idRecipe;
+          create(id, false);
+        }
+      }
+    );
+  }
 
-  //function which create the new recipe with an id that we precise
-  const create = (id) => {
+  // Function which create the new recipe with an id that we precise
+  const create = (id, isNew) => {
     db.query(
       "INSERT INTO recipe (idRecipe, version, name, nbPortion, preparationTime, bakingTime, breakTime) VALUES (?,?,?,?,?,?,?)",
-      [
-        id + 1,
-        version,
-        name,
-        nbPortion,
-        preparationTime,
-        bakingTime,
-        breakTime,
-      ],
+      [id, version, name, nbPortion, preparationTime, bakingTime, breakTime],
       (err, result) => {
-        err ? console.log(err) : res.send({ id: id + 1 });
+        if (err) console.log(err);
+        else if (!isNew) newSteps();
+        res.send({ id, version });
+      }
+    );
+  };
+
+  const newSteps = () => {
+    db.query(
+      "SELECT s.idStep, s.description, p.stepIndex FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep WHERE p.idRecipe=? AND p.idVersion=?",
+      [id, originalVersion],
+      (err, result) => {
+        if (err) console.log(err);
+        else
+          result.forEach((step) => {
+            db.query(
+              "INSERT INTO step (description) VALUES (?)",
+              [step.description],
+              (err, insertResult) => {
+                if (err) console.log(err);
+                else {
+                  db.query(
+                    "INSERT INTO preparation VALUES (?, ?, ?, ?)",
+                    [id, version, insertResult.insertId, step.stepIndex],
+                    (err, insertRes) => {
+                      if (err) console.log(err);
+                      else newIngredients(step.idStep, insertResult.insertId);
+                    }
+                  );
+                }
+              }
+            );
+          });
+      }
+    );
+  };
+
+  const newIngredients = (idOriginalStep, idNewStep) => {
+    db.query(
+      "INSERT INTO ingredient (name) SELECT i.name FROM ingredient AS i INNER JOIN stepneed AS s ON i.idIngredient=s.idIngredient WHERE s.idStep=?",
+      [idOriginalStep],
+      (err, result) => {
+        if (err) console.log(err);
+        else
+          db.query(
+            "SELECT i.idIngredient FROM ingredient AS i INNER JOIN stepneed AS s ON i.idIngredient=s.idIngredient WHERE s.idStep=?",
+            [idOriginalStep],
+            (err, selectResult) => {
+              if (err) console.log(err);
+              else
+                for (let i = 0; i < result.affectedRows; i++) {
+                  db.query(
+                    "INSERT INTO stepneed SELECT ?, ?, quantity, unit FROM stepneed WHERE idStep=? AND idIngredient=?",
+                    [
+                      idNewStep,
+                      i + result.insertId,
+                      idOriginalStep,
+                      selectResult[i].idIngredient,
+                    ],
+                    (err, jpp) => (err ? console.log(err) : "")
+                  );
+                }
+            }
+          );
       }
     );
   };
@@ -257,7 +332,7 @@ app.get("/categories", (req, res) => {
 app.get("/recipeCategories", (req, res) => {
   const { idRecipe, version } = req.query;
   db.query(
-    "SELECT c.name FROM categorization AS z INNER JOIN category AS c ON c.idCategory=z.idCategory WHERE z.idRecipe=? AND z.idVersion=?",
+    "SELECT c.name, c.idCategory FROM categorization AS z INNER JOIN category AS c ON c.idCategory=z.idCategory WHERE z.idRecipe=? AND z.idVersion=?",
     [idRecipe, version],
     (err, result) => {
       err ? console.log(err) : res.send(result);

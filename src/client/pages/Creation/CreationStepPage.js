@@ -145,7 +145,7 @@ export default function StepCreation() {
             <p className="textStyle required">* : champ obligatoire</p>
             <div className="buttons">
               <a className="btnDiscard" type="submit" onClick={DeleteStep}>
-                Annuler
+                Supprimer
               </a>
               {/* Button to add a description to the step */}
               <a className="btnSubmit" type="submit" onClick={UpdateStep}>

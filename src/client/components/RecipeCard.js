@@ -27,9 +27,6 @@ export default function RecipeCard(props) {
   useEffect(() => {
     getCategories();
   }, []);
-  useEffect(() => {
-    console.log(listCategories);
-  }, [listCategories]);
 
   return (
     <div className="col-xl-3 col-md-6 col-sm-6 p-0">
