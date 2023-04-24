@@ -11,7 +11,7 @@ import StepCard from "../../components/StepCard";
 // Page to display the creation progress of the recipe.
 // We can see the name and the steps. To see ingredients we have to click on the step
 export default function CreationProgress() {
-  let { idRecipe } = useParams();
+  let { idRecipe, version } = useParams();
   const [name, setName] = useState("");
   const [listSteps, setListSteps] = useState([]);
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export default function CreationProgress() {
   };
   const getSteps = () => {
     Axios.get("http://localhost:3001/steps", {
-      params: { idRecipe, version: 1 },
+      params: { idRecipe, version },
     })
       .then((response) => {
         setListSteps(response.data);
@@ -42,10 +42,10 @@ export default function CreationProgress() {
 
   // Functions add and delete elements to the BD
   const AddStep = () => {
-    Axios.post("http://localhost:3001/step", { params: { idRecipe } })
+    Axios.post("http://localhost:3001/step", { params: { idRecipe, version } })
       .then((res) => {
         //redirection to the next page
-        navigate(`/creationstep/${idRecipe}/${res.data.idStep}`);
+        navigate(`/creationstep/${idRecipe}/${version}/${res.data.idStep}`);
       })
       .catch((error) => {
         console.log(error);
@@ -53,7 +53,7 @@ export default function CreationProgress() {
   };
   const DeleteRecipe = () => {
     Axios.delete("http://localhost:3001/recipe", {
-      params: { idRecipe: idRecipe, version: 1 },
+      params: { idRecipe, version },
     })
       .then(navigate("/"))
       .catch((error) => {
@@ -106,6 +106,7 @@ export default function CreationProgress() {
                     key={index}
                     step={step}
                     idRecipe={idRecipe}
+                    version={version}
                     callBack={getSteps}
                   />
                 );

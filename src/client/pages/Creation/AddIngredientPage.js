@@ -11,7 +11,7 @@ export default function AddIngredient() {
   const [quantity, setQuantity] = useState(location.state?.quantity);
   const [unit, setUnit] = useState(location.state?.unit);
   const navigate = useNavigate();
-  let { idRecipe, idStep } = useParams();
+  let { idRecipe, idStep, version } = useParams();
 
   // Function to add ingredient to the BD
   const AddIngredient = () => {
@@ -28,7 +28,7 @@ export default function AddIngredient() {
         },
       })
         .then(() => {
-          navigate(`/creationstep/${idRecipe}/${idStep}`);
+          navigate(`/creationstep/${idRecipe}/${version}/${idStep}`);
         })
         .catch((error) => {
           console.log(error);
@@ -38,7 +38,7 @@ export default function AddIngredient() {
 
   // Function to return to the step creation
   const ToStep = () => {
-    navigate(`/creationstep/${idRecipe}/${idStep}`);
+    navigate(`/creationstep/${idRecipe}/${version}/${idStep}`);
   };
 
   return (

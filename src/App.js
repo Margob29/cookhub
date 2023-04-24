@@ -28,15 +28,15 @@ function App() {
           <Route path="/confirmation/:id/:version" element={<Confirmation />} />
           <Route path="/creation" element={<CreationForm />} />
           <Route
-            path="/creationprogress/:idRecipe"
+            path="/creationprogress/:idRecipe/:version"
             element={<CreationProgress />}
           />
           <Route
-            path="/creationstep/:idRecipe/:idStep"
+            path="/creationstep/:idRecipe/:version/:idStep"
             element={<StepCreation />}
           />
           <Route
-            path="/addingredient/:idRecipe/:idStep"
+            path="/addingredient/:idRecipe/:version/:idStep"
             element={<AddIngredient />}
           />
           <Route path="/steps/:idRecipe/:version" element={<StepsPage />} />

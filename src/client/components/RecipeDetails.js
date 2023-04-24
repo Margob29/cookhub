@@ -58,7 +58,7 @@ export default function RecipeDetails(props) {
 
   // Functions to navigate between pages
   const BackToCreation = () => {
-    navigate(`/creationprogress/${props.id}`);
+    navigate(`/creationprogress/${props.id}/${props.version}`);
   };
   const ToSteps = () => {
     navigate(`/steps/${props.id}/${props.version}`);

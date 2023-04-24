@@ -13,7 +13,7 @@ export default function StepCreation() {
   const location = useLocation();
   const [description, setDescription] = useState(location.state?.description);
   const [ingredientsList, setIngredientsList] = useState("");
-  let { idRecipe, idStep } = useParams();
+  let { idRecipe, version, idStep } = useParams();
   const navigate = useNavigate();
 
   // Function to get existing ingredients from the DB
@@ -39,7 +39,7 @@ export default function StepCreation() {
         params: { description, idStep, idRecipe },
       })
         .then(() => {
-          navigate(`/creationprogress/${idRecipe}`);
+          navigate(`/creationprogress/${idRecipe}/${version}`);
         })
         .catch((error) => {
           console.log(error);
@@ -52,7 +52,7 @@ export default function StepCreation() {
     Axios.delete("http://localhost:3001/step", {
       params: { idStep },
     })
-      .then(() => navigate(`/creationprogress/${idRecipe}`))
+      .then(() => navigate(`/creationprogress/${idRecipe}/${version}`))
       .catch((error) => {
         console.log(error);
       });
@@ -65,7 +65,7 @@ export default function StepCreation() {
 
   // Functions to navigate to other pages
   const toAddIngredient = () => {
-    navigate(`/addingredient/${idRecipe}/${idStep}`);
+    navigate(`/addingredient/${idRecipe}/${version}/${idStep}`);
   };
 
   return (

@@ -74,7 +74,7 @@ export default function CreationForm() {
             });
           }
           // Redirection to the next page
-          navigate(`/creationprogress/${res.data.id}`);
+          navigate(`/creationprogress/${res.data.id}/${res.data.version}`);
         })
         .catch((error) => {
           console.log(error);

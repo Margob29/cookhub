@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 // Card to display steps during the creation
 export default function StepCard(props) {
-  const { step, idRecipe } = props;
+  const { step, idRecipe, version } = props;
   const navigate = useNavigate();
 
   // Function to delete a step
@@ -24,7 +24,7 @@ export default function StepCard(props) {
 
   // Navigate to the ingredient page with the form already fill
   const toStep = () => {
-    navigate(`/creationstep/${idRecipe}/${step.idStep}`, {
+    navigate(`/creationstep/${idRecipe}/${version}/${step.idStep}`, {
       state: step,
     });
   };

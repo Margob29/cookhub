@@ -6,7 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 // Ingredients display when a step is creating. Possibility to modify or delete
 export default function IngredientStep(props) {
   const { idIngredient } = props.ingredient;
-  let { idRecipe, idStep } = useParams();
+  let { idRecipe, idStep, version } = useParams();
   const navigate = useNavigate();
 
   // Function to delete the ingredient in the DB
@@ -24,7 +24,7 @@ export default function IngredientStep(props) {
 
   // Navigate to the ingredient page with the form already fill
   const toIngredient = () => {
-    navigate(`/addingredient/${idRecipe}/${idStep}`, {
+    navigate(`/addingredient/${idRecipe}/${version}/${idStep}`, {
       state: props.ingredient,
     });
   };

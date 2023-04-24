@@ -194,15 +194,15 @@ app.post("/ingredient", (req, res) => {
 // -------------- CREATE STEP ---------------
 // Create a step and its link to a recipe
 app.post("/step", (req, res) => {
-  const { idRecipe } = req.body.params;
+  const { idRecipe, version } = req.body.params;
   db.query("INSERT INTO step (description) VALUE (null)", (err, result) => {
     err ? console.log(err) : preparation(result.insertId);
   });
 
   const preparation = (idStep) => {
     db.query(
-      "INSERT INTO preparation (idRecipe, idVersion, idStep, stepIndex) SELECT ?, 1, ?, IF(MAX(stepIndex) IS NULL, 1, MAX(stepIndex)+1) FROM preparation WHERE idRecipe=? AND idVersion =1; ",
-      [idRecipe, idStep, idRecipe],
+      "INSERT INTO preparation (idRecipe, idVersion, idStep, stepIndex) SELECT ?, ?, ?, IF(MAX(stepIndex) IS NULL, 1, MAX(stepIndex)+1) FROM preparation WHERE idRecipe=? AND idVersion =?; ",
+      [idRecipe, version, idStep, idRecipe, version],
       (err, result) => {
         err ? console.log(err) : res.send({ idStep });
       }
@@ -286,6 +286,7 @@ app.get("/recipes", (req, res) => {
 //Get all the steps from a recipe
 app.get("/steps", (req, res) => {
   const { idRecipe, version } = req.query;
+  console.log(idRecipe, version);
   db.query(
     "SELECT p.stepIndex, s.description, s.idStep FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep AND idRecipe=? AND idVersion=? ORDER BY p.stepIndex",
     [idRecipe, version],

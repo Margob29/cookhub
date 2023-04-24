@@ -65,6 +65,7 @@ export default function StepsPage() {
     getIngredients();
   }, [arrayIndex, stepsList]);
 
+  console.log(stepsList);
   return (
     <div>
       <h3 className="formtitle mb-4 mt-2">
