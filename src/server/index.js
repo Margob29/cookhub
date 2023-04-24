@@ -82,6 +82,7 @@ app.post("/create", async (req, res) => {
     );
   };
 
+  // Function to duplicate the steps and their connexion to the new version which is created
   const newSteps = () => {
     db.query(
       "SELECT s.idStep, s.description, p.stepIndex FROM step AS s INNER JOIN preparation AS p ON p.idStep=s.idStep WHERE p.idRecipe=? AND p.idVersion=?",
@@ -112,6 +113,7 @@ app.post("/create", async (req, res) => {
     );
   };
 
+  // Function to duplicate the ingredients and their relations to steps when a new version of a recipe is created
   const newIngredients = (idOriginalStep, idNewStep) => {
     db.query(
       "INSERT INTO ingredient (name) SELECT i.name FROM ingredient AS i INNER JOIN stepneed AS s ON i.idIngredient=s.idIngredient WHERE s.idStep=?",
@@ -211,10 +213,10 @@ app.post("/step", (req, res) => {
 // -------------- CREATE LINK TO CATEGORY --------------
 // Link the categories selected to the recipe
 app.post("/categories", (req, res) => {
-  const { idRecipe, idCategory } = req.body.params;
+  const { idRecipe, idVersion, idCategory } = req.body.params;
   db.query(
-    "INSERT INTO categorization (idRecipe, idVersion, idCategory) VALUES (?,1,?)",
-    [idRecipe, idCategory],
+    "INSERT INTO categorization (idRecipe, idVersion, idCategory) VALUES (?,?,?)",
+    [idRecipe, idVersion, idCategory],
     (err, result) => {
       err ? console.log(err) : res.sendStatus(201);
     }

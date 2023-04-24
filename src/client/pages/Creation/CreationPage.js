@@ -84,8 +84,13 @@ export default function CreationForm() {
 
   // Add categories linked to the recipe
   const AddCategories = async (idRecipe, idCategory) => {
+    const integerVersion = parseInt(location.state?.version);
     return Axios.post("http://localhost:3001/categories", {
-      params: { idRecipe, idCategory: idCategory },
+      params: {
+        idRecipe,
+        idVersion: integerVersion + 1 || 1,
+        idCategory: idCategory,
+      },
     }).catch((error) => console.log(error));
   };
 
